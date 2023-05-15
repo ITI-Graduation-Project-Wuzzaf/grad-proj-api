@@ -1,0 +1,22 @@
+{
+  "name": "backend",
+  "version": "1.0.0",
+  "description": "iti graduation project api",
+  "main": "app.ts",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ITI-Graduation-Project-Wuzzaf/grad-proj-api.git"
+  },
+  "keywords": [
+    "jobs"
+  ],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/ITI-Graduation-Project-Wuzzaf/grad-proj-api/issues"
+  },
+  "homepage": "https://github.com/ITI-Graduation-Project-Wuzzaf/grad-proj-api#readme"
+}
