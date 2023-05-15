@@ -1,0 +1,13 @@
+name: tests
+
+on:
+  push:
+    branches:
+      - '*'
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - run: cd backend && npm install && npm run test:ci
