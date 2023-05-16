@@ -7,6 +7,7 @@
     "start": "pm2 start dist/app.js -i 2 --name=\"grad-api\" --no-daemon",
     "start:dev": "ts-node-dev -r dotenv/config src/app.ts",
     "start:debug": "node --inspect-brk src/app.ts",
+    "app:reload": "pm2 reload all",
     "build": "tsc",
     "test": "jest --watchAll --no-cache",
     "test:ci": "jest",
