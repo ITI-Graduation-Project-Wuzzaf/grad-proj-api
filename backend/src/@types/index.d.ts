@@ -9,7 +9,7 @@ declare module 'knex/types/tables' {
     // first where and select return type, second update, third upsert
     // NOTE  purpose of below types is for only insert and update
     user_composite: Knex.CompositeTableType<
-      IUser,
+      Omit<IUser, 'password'>,
       Pick<IUser, 'name'> & Partial<Pick<IUser, 'created_at' | 'updated_at'>>,
       Partial<Omit<IUser, 'id'>>
     >;

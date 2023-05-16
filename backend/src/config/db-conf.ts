@@ -12,4 +12,6 @@ const config: Knex.Config = {
   acquireConnectionTimeout: 10000,
 };
 
-export const knex = knexInstance(config);
+const knex = knexInstance(config);
+
+export default knex;
