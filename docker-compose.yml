@@ -12,8 +12,8 @@ services:
       - /app/node_modules
 
   db:
-    image: postgres
-    restart: always
+    image: postgres:latest
+    container_name: postgres
     ports:
       - 5432:5432
     volumes:
@@ -27,3 +27,6 @@ services:
       - '8080:80'
     env_file:
       - fileName
+
+volumes:
+  progresDB:
