@@ -11,6 +11,9 @@ export default class ApplicationConfig {
   static init(app: express.Application) {
     app.use(cors());
     app.use(express.json());
+    // if (process.env.NODE_ENV !== 'test') {
+    //   app.use(morgan('dev'));
+    // }
     app.use(morgan('dev'));
     app.use(helmet());
     app.use(hpp());

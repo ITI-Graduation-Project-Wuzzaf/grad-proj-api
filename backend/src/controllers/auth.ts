@@ -2,8 +2,9 @@ import { Request, Response } from 'express';
 import jwt from 'jsonwebtoken';
 import bcrypt from 'bcrypt';
 
-import knex from './../config/db-conf';
 import { BadRequestError } from '../errors/BadRequestError';
+
+import knex from '../../db/knex';
 
 export const signup = async (req: Request, res: Response) => {
   const { email, password } = req.body;
