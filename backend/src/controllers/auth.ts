@@ -3,15 +3,15 @@ import jwt from 'jsonwebtoken';
 import bcrypt from 'bcrypt';
 
 import knex from './../config/db-conf';
+import { BadRequestError } from '../errors/BadRequestError';
 
 export const signup = async (req: Request, res: Response) => {
   const { email, password } = req.body;
 
-  // IMPORTANT  knex in where clause when getting value of undefined throws an error (use validator)
   const existingUser = await knex.select('*').from('user_account').where('email', 'ILIKE', email).first();
 
   if (existingUser) {
-    throw new Error('nope, this email is already used buddy');
+    throw new BadRequestError(`Email: ${email} is already used`);
   }
 
   const hashedPassword = await bcrypt.hash(password, 8);
@@ -29,11 +29,11 @@ export const login = async (req: Request, res: Response) => {
   const existingUser = await knex.select('*').from('user_account').where('email', 'ILIKE', email).first();
 
   if (!existingUser) {
-    throw new Error('invalid credentials');
+    throw new BadRequestError('Invalid email or password.');
   }
   const isMatched = await bcrypt.compare(password, existingUser.password);
   if (!isMatched) {
-    throw new Error('invalid credentials');
+    throw new BadRequestError('Invalid email or password.');
   }
 
   const { password: omitted, ...user } = existingUser;
