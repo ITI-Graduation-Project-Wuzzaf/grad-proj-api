@@ -6,8 +6,9 @@ import { BadRequestError } from '../errors/BadRequestError';
 
 import knex from '../../db/knex';
 
+// HERE  signup
 export const signup = async (req: Request, res: Response) => {
-  const { email, password } = req.body;
+  const { email, password, first_name, last_name } = req.body;
 
   const existingUser = await knex.select('*').from('user_account').where('email', 'ILIKE', email).first();
 
@@ -17,13 +18,16 @@ export const signup = async (req: Request, res: Response) => {
 
   const hashedPassword = await bcrypt.hash(password, 8);
 
-  const user = await knex.insert({ email, password: hashedPassword }).into('user_account').returning(['email', 'id']);
+  const user = await knex('user_account')
+    .insert({ email, password: hashedPassword, first_name, last_name })
+    .returning(['email', 'id']);
 
   const accessToken = jwt.sign({ id: user[0].id, email: user[0].email }, 'secret');
 
   res.status(201).send({ user: user[0], accessToken });
 };
 
+// HERE  LOGIN
 export const login = async (req: Request, res: Response) => {
   const { email, password } = req.body;
 

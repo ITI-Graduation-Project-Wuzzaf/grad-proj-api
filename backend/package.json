@@ -2,7 +2,7 @@
   "name": "backend",
   "version": "1.0.0",
   "description": "iti graduation project api",
-  "main": "app.ts",
+  "main": "index.ts",
   "scripts": {
     "start": "pm2 start dist/app.js -i 2 --name=\"grad-api\" --no-daemon",
     "start:dev": "ts-node-dev -r dotenv/config src/app.ts",
