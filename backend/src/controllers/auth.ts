@@ -23,6 +23,22 @@ export const signup = async (req: Request, res: Response) => {
   res.status(201).send({ user: user[0], accessToken });
 };
 
-// export const login = (req: Request, res: Response) => {};
+export const login = async (req: Request, res: Response) => {
+  const { email, password } = req.body;
+
+  const existingUser = await knex.select('*').from('user_account').where('email', 'ILIKE', email).first();
+
+  if (!existingUser) {
+    throw new Error('invalid credentials');
+  }
+  const isMatched = await bcrypt.compare(password, existingUser.password);
+  if (!isMatched) {
+    throw new Error('invalid credentials');
+  }
+
+  const { password: omitted, ...user } = existingUser;
+  const accessToken = jwt.sign({ id: existingUser.id, email: existingUser.email }, 'secret');
+  res.status(200).send({ user, accessToken });
+};
 
 // export const logout = (req: Request, res: Response) => {};
