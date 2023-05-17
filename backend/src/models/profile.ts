@@ -1,4 +1,4 @@
-import { knex } from '../config/db-conf';
+import knex from '../config/db-conf';
 
 export const profileTable = knex.schema.hasTable('profile').then(async (exists) => {
   if (!exists) {
