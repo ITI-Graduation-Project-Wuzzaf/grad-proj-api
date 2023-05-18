@@ -42,3 +42,16 @@ For setting up postgres you will need:
 ### 3) Environment variables.
 To run this project, you will need to add the following environment variables to your .env file
 
+- Database: `POSTGRES_HOST`
+`POSTGRES_PORT`
+`POSTGRES_USER`
+`POSTGRES_PASSWORD`
+`POSTGRES_DB`
+`POSTGRES_DB_TEST`
+
+- JWT:  `JWT_SECRET`
+`JWT_ACCESS_EXPIRY`
+
+- Hashing: `SR`
+`PEPPER`
+
