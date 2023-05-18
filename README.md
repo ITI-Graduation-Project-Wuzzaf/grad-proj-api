@@ -103,6 +103,18 @@ npm run format               - format code with prettier
 
 ### Endpoints
 
+
+
+| Method                             | Path      |  Description      |
+| ---------------------------------- | --------- | --------- |
+| GET                       | /api-docs      | Swagger API documentation |
+| POST                            | /v1/signup | Signing up  |
+| POST                            | /v1/login       | login |
+
+
+
+
+
 ## Testing
 
 ### Unit Tests:
