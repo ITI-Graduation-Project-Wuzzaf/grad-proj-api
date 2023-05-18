@@ -1,7 +1,9 @@
 import { Knex } from 'knex';
 import { hashSync } from 'bcrypt';
 
-const password = hashSync('12345678', 8);
+const { PEPPER, SR } = process.env;
+
+const password = hashSync('12345678' + PEPPER, Number(SR));
 
 export async function seed(knex: Knex): Promise<void> {
   // Deletes ALL existing entries

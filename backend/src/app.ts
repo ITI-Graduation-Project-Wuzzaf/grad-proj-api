@@ -6,6 +6,10 @@ import helmet from 'helmet';
 import hpp from 'hpp';
 import swaggerUI from 'swagger-ui-express';
 
+import dotenv from 'dotenv';
+
+dotenv.config();
+
 import swaggerDocument from '../swagger.json';
 import errorHandler from './middlewares/errorHandler';
 import routes from './routes';
