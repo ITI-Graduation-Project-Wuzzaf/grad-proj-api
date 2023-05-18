@@ -7,6 +7,7 @@ Rest API using Node, express, and postgres for ITI graduation project (jobify), 
 - [Technologies](#technologies)
 - [Data Shape](#data-shape)
 - [Installation](#installation)
+- [Using Docker](#using-docker)
 - [Usage](#usage)
 - [Testing](#testing)
 - [Feedback](#feedback)
@@ -56,6 +57,18 @@ To run this project, you will need to add the following environment variables to
 
 - Hashing: `SR`
 `PEPPER`
+
+## Using Docker
+to start the server with docker you will need to add 2 more environment variables for pgadmin
+`PGADMIN_DEFAULT_EMAIL`
+and
+`PGADMIN_DEFAULT_PASSWORD`
+to be able to login into pgadmin
+then run
+
+ `docker compose up --build` 
+and you are good to go
+
 
 ## Usage
 
