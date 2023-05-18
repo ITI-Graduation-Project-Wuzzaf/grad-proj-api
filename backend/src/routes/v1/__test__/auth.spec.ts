@@ -19,6 +19,7 @@ describe('Auth routes', () => {
 
       expect(res.body.user.id).toEqual(6);
       expect(res.body.user.email).toEqual(email);
+      expect(res.body.accessToken).toBeDefined();
     });
 
     it('Should returns a 422 with an invalid email', async () => {
@@ -78,8 +79,49 @@ describe('Auth routes', () => {
   });
 
   describe('POST /v1/login', () => {
-    // it('Should', async () => {
-    console.log('pew');
-    // });
+    it('Should return user data and access token when given valid credentials', async () => {
+      const res = await request(app)
+        .post('/v1/login')
+        .send({
+          email: 'bassel@test.com',
+          password: '12345678',
+        })
+        .expect(200);
+
+      expect(res.body.accessToken).toBeDefined();
+      expect(res.body.user.email).toEqual('bassel@test.com');
+      expect(res.body.user.first_name).toEqual('Bassel');
+      expect(res.body.user.last_name).toEqual('Salah');
+    });
+
+    it("Should fail when an email that doesn't exists is supplied", async () => {
+      await request(app)
+        .post('/v1/login')
+        .send({
+          email: 'test@test.com',
+          password: '12345678',
+        })
+        .expect(400);
+    });
+
+    it('Should fail when an incorrect password is supplied', async () => {
+      await request(app)
+        .post('/v1/login')
+        .send({
+          email: 'bassel@test.com',
+          password: '1234abcd',
+        })
+        .expect(400);
+    });
+
+    it('Should return 422 when given invalid email', async () => {
+      await request(app)
+        .post('/v1/login')
+        .send({
+          email: 'bassel',
+          password: '12345678',
+        })
+        .expect(422);
+    });
   });
 });

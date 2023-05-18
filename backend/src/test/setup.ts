@@ -7,5 +7,9 @@ beforeEach(async () => {
 });
 
 afterEach(async () => {
-  // await knex.migrate.rollback();
+  await knex.migrate.rollback();
+});
+
+afterAll(async () => {
+  await knex.destroy();
 });
