@@ -5,6 +5,7 @@
   "main": "index.ts",
   "scripts": {
     "start": "pm2 start dist/index.js -i 2 --name=\"grad-api\" --no-daemon",
+    "dev": "nodemon -L src/index.ts",
     "start:dev": "ts-node-dev src/index.ts",
     "start:debug": "node --inspect-brk src/index.ts",
     "app:reload": "pm2 reload all",
@@ -71,6 +72,7 @@
     "husky": "^8.0.0",
     "jest": "^29.5.0",
     "lint-staged": "^13.2.2",
+    "nodemon": "^2.0.22",
     "prettier": "^2.8.8",
     "supertest": "^6.3.3",
     "ts-jest": "^29.1.0",
