@@ -4,9 +4,9 @@
   "description": "iti graduation project api",
   "main": "index.ts",
   "scripts": {
-    "start": "pm2 start dist/app.js -i 2 --name=\"grad-api\" --no-daemon",
-    "start:dev": "ts-node-dev -r dotenv/config src/app.ts",
-    "start:debug": "node --inspect-brk src/app.ts",
+    "start": "pm2 start dist/index.js -i 2 --name=\"grad-api\" --no-daemon",
+    "start:dev": "ts-node-dev -r dotenv/config src/index.ts",
+    "start:debug": "node --inspect-brk src/index.ts",
     "app:reload": "pm2 reload all",
     "build": "tsc",
     "test": "jest --watchAll --no-cache",

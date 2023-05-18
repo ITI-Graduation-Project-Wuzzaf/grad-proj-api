@@ -1,4 +1,5 @@
 import express from 'express';
+import 'express-async-errors';
 import cors from 'cors';
 import morgan from 'morgan';
 import helmet from 'helmet';
@@ -13,9 +14,11 @@ export const app = express();
 
 app.use(cors());
 app.use(express.json());
+
 if (process.env.NODE_ENV !== 'test') {
   app.use(morgan('dev'));
 }
+
 app.use(helmet());
 app.use(hpp());
 app.use('/api-docs', swaggerUI.serve, swaggerUI.setup(swaggerDocument));
