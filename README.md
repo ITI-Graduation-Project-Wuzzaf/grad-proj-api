@@ -37,7 +37,7 @@ For setting up postgres you will need:
 1. Create a database for the project.
 2. Ensure to have user with privileges to the database.
 3. Run migration script `npm run migration:dev`
-4. Run seeding script `npm run seed:run`
+4. Run seeding script `npm run seed:run` (Optional)
 
 ### 3) Environment variables.
 To run this project, you will need to add the following environment variables to your .env file
