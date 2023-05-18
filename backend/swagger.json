@@ -1,18 +1,184 @@
 {
-  "swagger": "2.0",
+  "openapi": "3.0.0",
   "info": {
     "version": "1.0.0",
-    "title": "Some Title",
-    "description": "Some brief description",
-    "contact": { "email": "example@test.com" },
+    "title": "Jobify API",
+    "description": "Jobify jobs portal Rest API",
+    "contact": { "email": "bassel2053@gmail.com" },
     "license": {
       "name": "MIT",
       "url": "https://opensource.org/licenses/MIT"
     }
   },
-  "host": "localhost:3000",
-  "basePath": "/",
+  "servers": [
+    {
+      "url": "http://localhost:5000/v1",
+      "description": "Development server",
+      "port": { "default": "3000" },
+      "basePath": {
+        "default": "v1"
+      }
+    }
+  ],
+  "tags": [
+    {
+      "name": "auth",
+      "description": "Authentication routes for jobify"
+    }
+  ],
   "schemes": ["http"],
-  "paths": {},
-  "definitions": {}
+  "produces": ["application/json"],
+  "paths": {
+    "/signup": {
+      "post": {
+        "tags": ["auth"],
+        "summary": "Create a new user",
+        "description": "creating new user account in jobify",
+        "consumes": ["application/json"],
+        "produces": ["application/json"],
+        "operationId": "createUser",
+        "requestBody": {
+          "description": "Created user object",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "email": {
+                    "type": "string",
+                    "example": "test@example.com"
+                  },
+                  "password": {
+                    "type": "string",
+                    "example": "00000000"
+                  },
+                  "confirmPassword": {
+                    "type": "string",
+                    "example": "00000000"
+                  },
+                  "first_name": {
+                    "type": "string",
+                    "example": "John"
+                  },
+                  "last_name": {
+                    "type": "string",
+                    "example": "Doe"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "User created successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "user": {
+                      "type": "object",
+                      "properties": {
+                        "email": {
+                          "type": "string",
+                          "example": "test@example.com"
+                        },
+                        "id": { "type": "number", "example": 10 }
+                      }
+                    },
+                    "accessToken": { "type": "string" }
+                  }
+                }
+              }
+            }
+          },
+          "400": { "description": "A duplicate email detected" },
+          "422": { "description": "Validation error happened" }
+        }
+      }
+    },
+    "/login": {
+      "post": {
+        "tags": ["auth"],
+        "summary": "User signin",
+        "description": "User login to get access to jobify resources like jobs, companies and profiels",
+        "operationId": "login",
+        "requestBody": {
+          "description": "Login object",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "username": {
+                    "type": "string",
+                    "example": "test@example.com"
+                  },
+                  "password": { "type": "string", "example": "000000" }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "User is authenticated",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "user": { "$ref": "#/components/schemas/User" },
+                    "accessToken": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "The email and password combination is not valid"
+          },
+          "422": { "description": "Validation error happened" }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "User": {
+        "type": "object",
+        "required": ["email", "password", "first_name", "last_name"],
+        "properties": {
+          "id": {
+            "type": "number",
+            "description": "user id"
+          },
+          "email": {
+            "type": "string",
+            "description": "unique email for every user account"
+          },
+          "first_name": {
+            "type": "string",
+            "example": "John"
+          },
+          "last_name": {
+            "type": "string",
+            "example": "Doe"
+          }
+        }
+      }
+    },
+    "securitySchemes": {
+      "bearerAuth": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "JWT"
+      }
+    }
+  }
 }

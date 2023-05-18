@@ -5,8 +5,7 @@ dotenv.config();
 
 // Update with your config settings.
 
-const { POSTGRES_HOST, POSTGRES_PORT, POSTGRES_USER, POSTGRES_PASSWORD, POSTGRES_DATABASE, POSTGRES_DATABASE_TEST } =
-  process.env;
+const { POSTGRES_HOST, POSTGRES_PORT, POSTGRES_USER, POSTGRES_PASSWORD, POSTGRES_DB, POSTGRES_DB_TEST } = process.env;
 
 const config: { [key: string]: Knex.Config } = {
   development: {
@@ -16,7 +15,7 @@ const config: { [key: string]: Knex.Config } = {
       port: Number(POSTGRES_PORT),
       user: POSTGRES_USER,
       password: POSTGRES_PASSWORD,
-      database: POSTGRES_DATABASE,
+      database: POSTGRES_DB,
     },
     migrations: {
       directory: __dirname + '/db/migrations',
@@ -34,7 +33,7 @@ const config: { [key: string]: Knex.Config } = {
       port: Number(POSTGRES_PORT),
       user: POSTGRES_USER,
       password: POSTGRES_PASSWORD,
-      database: POSTGRES_DATABASE_TEST,
+      database: POSTGRES_DB_TEST,
     },
     migrations: {
       directory: __dirname + '/db/migrations',
