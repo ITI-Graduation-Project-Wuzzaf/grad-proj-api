@@ -58,3 +58,21 @@ To run this project, you will need to add the following environment variables to
 ## Usage
 
 ### Scripts
+
+### Endpoints
+
+## Testing
+
+### Unit Tests:
+
+Unit tests are implemented using jest.
+
+> Note: `still under progress`.
+
+```bash
+  npm run test
+```
+
+## Feedback
+
+If you have any feedback, please reach out to me at baselsalah2053@gmail.com
