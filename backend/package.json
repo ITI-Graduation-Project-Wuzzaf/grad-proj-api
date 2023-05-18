@@ -12,7 +12,7 @@
     "build": "tsc",
     "test": "jest --watchAll --no-cache",
     "test:ci": "jest",
-    "test:coverge": "jest --coverage",
+    "test:coverage": "jest --coverage",
     "lint": "eslint --ignore-path .eslintignore  --ext .js,.ts .",
     "format": "prettier --ignore-path .gitignore --write \"**/*.+(js|ts|json)\"",
     "prepare": "cd .. & npx husky install backend/.husky",

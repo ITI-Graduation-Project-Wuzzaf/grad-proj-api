@@ -6,10 +6,11 @@ export interface IProfile {
   gender: 'M' | 'F';
   experience_level: string;
   links: string[];
+  portfolio: string;
   profile_picture: string;
   cv: string;
   bio: string;
-  user_id: number;
+  university: string;
   created_at: string;
   updated_at: string;
 }
