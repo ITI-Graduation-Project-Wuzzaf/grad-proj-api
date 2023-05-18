@@ -1,8 +1,13 @@
 import { Router } from 'express';
+
+import { login, signup } from '../../controllers/auth';
+import { validateRequest } from '../../middlewares/validateRequest';
+import { loginSchema, signupSchema } from '../../utilities/validation/user';
+
 const router = Router();
 
-router.get('/users', async (_req, _res) => {
-  _res.send({});
-});
+router.post('/signup', validateRequest(signupSchema), signup);
+
+router.post('/login', validateRequest(loginSchema), login);
 
 export { router as authRouter };

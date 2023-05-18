@@ -1,21 +1,30 @@
 import express from 'express';
 import 'express-async-errors';
+import cors from 'cors';
+import morgan from 'morgan';
+import helmet from 'helmet';
+import hpp from 'hpp';
+import swaggerUI from 'swagger-ui-express';
 
-import ApplicationConfig from './config/app-conf';
+import dotenv from 'dotenv';
+
+dotenv.config();
+
+import swaggerDocument from '../swagger.json';
 import errorHandler from './middlewares/errorHandler';
 import routes from './routes';
-import createTables from './models';
 
 export const app = express();
-const PORT = process.env.PORT || 5000;
 
-ApplicationConfig.init(app);
+app.use(cors());
+app.use(express.json());
 
+if (process.env.NODE_ENV !== 'test') {
+  app.use(morgan('dev'));
+}
+
+app.use(helmet());
+app.use(hpp());
+app.use('/api-docs', swaggerUI.serve, swaggerUI.setup(swaggerDocument));
 app.use(routes);
 app.use(errorHandler);
-
-createTables();
-
-app.listen(PORT, async () => {
-  console.log(`server is running on localhost:${PORT}`);
-});
