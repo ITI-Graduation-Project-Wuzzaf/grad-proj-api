@@ -73,6 +73,33 @@ and you are good to go
 ## Usage
 
 ### Scripts
+```
+npm start                   - runs the app in production 
+
+npm run start:dev           - runs the app watch mode in typescript
+
+npm run start:debug         - runs the app with debugging
+
+
+npm run build               - compiles typescript to javascript (./dist)
+
+
+
+npm run migration:dev        - runs migrations
+
+npm run seed:run             - seeding tables
+
+
+npm test                     - jest tests in watch mode
+
+npm run test:ci              - runs tests once
+
+npm run test:coverage        - output coverage of the tests
+
+
+npm run lint                 - linting script
+npm run format               - format code with prettier
+```
 
 ### Endpoints
 
