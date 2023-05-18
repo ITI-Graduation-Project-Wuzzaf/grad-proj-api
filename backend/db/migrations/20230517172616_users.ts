@@ -17,9 +17,11 @@ export async function up(knex: Knex): Promise<void> {
       t.string('university');
       t.enu('gender', ['M', 'F']);
       t.string('experience', 100);
+      t.date('birthdate');
       t.text('profile_picture');
       t.text('cv');
       t.text('bio');
+      t.specificType('skills', 'varchar(100)[]');
       t.specificType('links', 'text[]');
       t.text('portfolio');
       t.timestamps();

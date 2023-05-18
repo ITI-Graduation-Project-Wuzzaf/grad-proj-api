@@ -1,19 +1,16 @@
 import joi from 'joi';
 
 export const profileSchema = joi.object({
-  address: {
-    state: joi.string(),
-    street: joi.string(),
-  },
-  DOB: joi.date().greater(new Date('2012-01-01')),
-  referred: joi.boolean().required(),
-  // we can make it different type depending on refered
-  referralDetails: joi.string().when('referred', {
-    is: true,
-    then: joi.string().required().min(3),
-    otherwise: joi.string().optional(),
-  }),
-  links: joi.array().items(), //take array of joi types
-  // resolves Yes to true
-  acceptTos: joi.boolean().truthy('Yes').valid(true).required(),
+  job: joi.string().max(100),
+  country: joi.string().max(60),
+  citry: joi.string().max(60),
+  university: joi.string().max(255),
+  gender: joi.string().valid('M', 'F'),
+  experience: joi.string().max(100),
+  birthdate: joi.date().greater('1950-01-01').less('1-12-2010'),
+  // DOB: joi.date().min('1950-01-01').max('2010-12-1'),
+  bio: joi.string().max(250),
+  skills: joi.array().items(joi.string()).min(2).max(30),
+  links: joi.array().items(joi.string()).min(1).max(2),
+  portfolio: joi.string(),
 });
