@@ -20,6 +20,8 @@ Rest API using Node, express, and postgres for ITI graduation project (jobify), 
 
 ## Data Shape
 
+this is still under progress
+
 ## Installation
 
 ### 1) Clone the repository, install node packages.
