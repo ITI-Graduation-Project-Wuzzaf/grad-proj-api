@@ -24,6 +24,10 @@
     {
       "name": "auth",
       "description": "Authentication routes for jobify"
+    },
+    {
+      "name": "users",
+      "description": "User related endpoints"
     }
   ],
   "schemes": ["http"],
@@ -146,6 +150,84 @@
           "422": { "description": "Validation error happened" }
         }
       }
+    },
+    "/profiles/{id}": {
+      "get": {
+        "tags": ["users"],
+        "summary": "User profile",
+        "description": "Get a specific profile data",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "description": "id of the user profile to get",
+            "required": true,
+            "type": "string",
+            "example": 12
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "User profile data is retrived",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Profile"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "User is not authorized"
+          },
+          "404": { "description": "User profile cannot be found" }
+        }
+      }
+    },
+    "/profiles": {
+      "patch": {
+        "tags": ["users"],
+        "summary": "Update user profile",
+        "description": "Updates the current logged in user profile",
+        "operationId": "updateProfile",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "requestBody": {
+          "description": "Updated profile data",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Profile"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "User profile is updated",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Profile"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "User is not authorized"
+          },
+          "422": { "description": "User profile cannot be found" }
+        }
+      }
     }
   },
   "components": {
@@ -179,17 +261,44 @@
             "type": "number",
             "description": "profile id"
           },
-          "email": {
-            "type": "string",
-            "description": "unique email for every user account"
+          "job": {
+            "type": "string"
           },
-          "first_name": {
+          "country": {
             "type": "string",
-            "example": "John"
+            "example": "Egypt"
           },
-          "last_name": {
+          "city": {
             "type": "string",
-            "example": "Doe"
+            "example": "Port Said"
+          },
+          "university": {
+            "type": "string",
+            "example": "Port Said"
+          },
+          "gender": {
+            "type": "string",
+            "enum": ["M", "F"]
+          },
+          "experience": {
+            "type": "string"
+          },
+          "brithdate": {
+            "type": "string"
+          },
+          "bio": {
+            "type": "string"
+          },
+          "skills": {
+            "type": "array",
+            "items": { "type": "string" }
+          },
+          "links": {
+            "type": "array",
+            "items": { "type": "string" }
+          },
+          "portfolio": {
+            "type": "string"
           }
         }
       }

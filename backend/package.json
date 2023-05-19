@@ -11,7 +11,7 @@
     "app:reload": "pm2 reload all",
     "build": "tsc",
     "test": "jest --watchAll --no-cache --runInBand",
-    "test:ci": "jest",
+    "test:ci": "jest --runInBand",
     "test:coverage": "jest --coverage",
     "lint": "eslint --ignore-path .eslintignore  --ext .js,.ts .",
     "format": "prettier --ignore-path .gitignore --write \"**/*.+(js|ts|json)\"",
