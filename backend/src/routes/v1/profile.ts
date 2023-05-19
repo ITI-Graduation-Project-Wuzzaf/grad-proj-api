@@ -7,7 +7,7 @@ import { requireAuth } from '../../middlewares/requireAuth';
 
 const router = Router();
 
-router.get('/profiles:id', requireAuth, show);
+router.get('/profiles/:id', requireAuth, show);
 router.patch('/profiles', requireAuth, validateRequest(profileSchema), update);
 
 export { router as profileRouter };

@@ -9,13 +9,15 @@ interface UserPayload {
 }
 
 export const requireAuth = (req: Request, res: Response, next: NextFunction) => {
-  try {
-    if (!req.headers.authorization) {
-      throw new NotAuthorizeError();
-    }
+  if (!req.headers.authorization) {
+    throw new NotAuthorizeError();
+  }
 
+  try {
     const token = req.headers.authorization?.split(' ')[1] as string;
+
     const payload = verify(token, process.env.JWT_SECRET as string) as UserPayload;
+
     res.locals.userId = payload.id;
     res.locals.email = payload.email;
     next();

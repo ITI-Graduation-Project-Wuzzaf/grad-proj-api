@@ -10,7 +10,7 @@
     "start:debug": "node --inspect-brk src/index.ts",
     "app:reload": "pm2 reload all",
     "build": "tsc",
-    "test": "jest --watchAll --no-cache",
+    "test": "jest --watchAll --no-cache --runInBand",
     "test:ci": "jest",
     "test:coverage": "jest --coverage",
     "lint": "eslint --ignore-path .eslintignore  --ext .js,.ts .",

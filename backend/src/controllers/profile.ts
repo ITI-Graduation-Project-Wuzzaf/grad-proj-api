@@ -4,6 +4,7 @@ import { NotFoundError } from '../errors/notFoundError';
 
 export const show = async (req: Request, res: Response) => {
   const id = +req.params.id;
+
   const profile = await knex.select('*').from('profile').where({ id }).first();
   if (!profile) {
     throw new NotFoundError();
@@ -14,5 +15,5 @@ export const show = async (req: Request, res: Response) => {
 export const update = async (req: Request, res: Response) => {
   const profile = await knex('profile').where({ id: res.locals.userId }).update(req.body).returning('*');
 
-  res.status(200).send(profile);
+  res.status(200).send(profile[0]);
 };

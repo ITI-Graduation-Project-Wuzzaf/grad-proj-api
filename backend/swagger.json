@@ -171,6 +171,27 @@
             "example": "Doe"
           }
         }
+      },
+      "Profile": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "number",
+            "description": "profile id"
+          },
+          "email": {
+            "type": "string",
+            "description": "unique email for every user account"
+          },
+          "first_name": {
+            "type": "string",
+            "example": "John"
+          },
+          "last_name": {
+            "type": "string",
+            "example": "Doe"
+          }
+        }
       }
     },
     "securitySchemes": {
