@@ -31,17 +31,17 @@ export const fileUpload = (req: Request, res: Response, _next: NextFunction) => 
 
   form.parse(req, (err, fields, files) => {
     if (err) {
-      return res.status(413).send('File size exceeds limit');
+      return res.status(413).send([{ message: 'File size exceeds limit' }]);
     }
 
     const file = files.file as File;
 
     if (!file) {
-      return res.status(404).send('Please make sure to provide a file to upload');
+      return res.status(404).send([{ message: 'Please make sure to provide a file to upload' }]);
     }
 
     if (fileTypes.indexOf(file.mimetype + '') === -1) {
-      return res.status(422).send('File type is not supported');
+      return res.status(422).send([{ message: 'File type is not supported' }]);
     }
     const fileStream = fs.createReadStream(file.filepath);
     const upload = new Upload({
