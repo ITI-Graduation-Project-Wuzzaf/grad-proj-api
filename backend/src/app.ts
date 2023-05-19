@@ -13,6 +13,7 @@ dotenv.config();
 import swaggerDocument from '../swagger.json';
 import errorHandler from './middlewares/errorHandler';
 import routes from './routes';
+import { fileUpload } from './middlewares/fileUpload';
 
 export const app = express();
 
@@ -26,5 +27,6 @@ if (process.env.NODE_ENV !== 'test') {
 app.use(helmet());
 app.use(hpp());
 app.use('/api-docs', swaggerUI.serve, swaggerUI.setup(swaggerDocument));
+app.post('/upload', fileUpload);
 app.use(routes);
 app.use(errorHandler);
