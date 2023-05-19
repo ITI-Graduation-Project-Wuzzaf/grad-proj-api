@@ -29,7 +29,7 @@ const s3 = new S3Client({
 export const fileUpload = (req: Request, res: Response, _next: NextFunction) => {
   const form = formidable({ allowEmptyFiles: false, maxFileSize: 5 * 1024 * 1024 }); //5mb max
 
-  form.parse(req, async (err, fields, files) => {
+  form.parse(req, (err, fields, files) => {
     if (err) {
       return res.status(413).send('File size exceeds limit');
     }
@@ -51,6 +51,7 @@ export const fileUpload = (req: Request, res: Response, _next: NextFunction) => 
         Bucket: S3_BUCKET,
         Key: `${Date.now().toString()}-${file.originalFilename}`,
         Body: fileStream,
+        ContentType: file.mimetype + '',
       },
       tags: [],
       queueSize: 4,
