@@ -24,6 +24,8 @@ export const signup = async (req: Request, res: Response) => {
     .insert({ email, password: hashedPassword, first_name, last_name })
     .returning(['email', 'id']);
 
+  await knex('profile').insert({ id: user[0].id });
+
   const accessToken = jwt.sign({ id: user[0].id, email: user[0].email }, JWT_SECRET + '', {
     expiresIn: JWT_ACCESS_EXPIRY + '',
   });

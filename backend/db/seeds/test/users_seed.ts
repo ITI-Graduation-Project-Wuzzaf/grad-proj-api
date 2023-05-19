@@ -7,6 +7,7 @@ const password = hashSync('12345678' + PEPPER, Number(SR));
 
 export async function seed(knex: Knex): Promise<void> {
   // Deletes ALL existing entries
+  await knex('profile').del();
   await knex('user_account').del();
 
   // Inserts seed entries
@@ -18,4 +19,6 @@ export async function seed(knex: Knex): Promise<void> {
     { id: 5, email: 'rewan@test.com', password, first_name: 'Rewan', last_name: 'Hamed' },
   ]);
   await knex.raw("select setval('user_account_id_seq', max(id)) from user_account");
+
+  await knex('profile').insert([{ id: 1 }, { id: 2 }, { id: 3 }, { id: 4 }, { id: 5 }]);
 }

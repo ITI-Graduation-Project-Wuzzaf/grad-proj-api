@@ -108,11 +108,13 @@ npm run format               - format code with prettier
 
 ### Endpoints
 
-| Method | Path       | Description               |
-| ------ | ---------- | ------------------------- |
-| GET    | /api-docs  | Swagger API documentation |
-| POST   | /v1/signup | Signing up                |
-| POST   | /v1/login  | login                     |
+| Method | Path              | Description                 |
+| ------ | ------------------| ----------------------------|
+| GET    | /api-docs         | Swagger API documentation   |
+| POST   | /v1/signup        | Signing up                  |
+| POST   | /v1/login         | login                       |
+| GET    | /v1/profiles/{id} | retrive user profile        |
+| PATCH  | /v1/profiles      | update current user profile |
 
 ## Testing
 
