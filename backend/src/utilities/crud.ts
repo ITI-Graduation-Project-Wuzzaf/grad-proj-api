@@ -6,7 +6,7 @@ import { NotFoundError } from '../errors/notFoundError';
 import { IUser } from '../@types/user';
 import { IEmployer } from '../@types/employer';
 
-type Table = 'user_account' | 'profile' | 'employer';
+type Table = 'user_account' | 'profile' | 'employer' | 'job';
 
 const { SR, PEPPER } = process.env;
 
@@ -18,12 +18,24 @@ export const show = async (table: Table, id: number) => {
   return instance;
 };
 
+export const create = async (table: Table, body: object) => {
+  const instance = await knex(table).insert(body).returning('*');
+  return instance[0];
+};
+
 export const update = async (table: Table, id: number, body: object) => {
   const instance = await knex(table).where({ id }).update(body).returning('*');
-  if (!instance) {
+  if (!instance.length) {
     throw new NotFoundError();
   }
-  return instance;
+  return instance[0];
+};
+
+export const remove = async (table: Table, id: number) => {
+  const instance = await knex(table).where({ id }).del().returning('*');
+  if (!instance.length) {
+    throw new NotFoundError();
+  }
 };
 
 export const signup = async (table: 'user_account' | 'employer', body: IUser | IEmployer) => {
@@ -38,5 +50,5 @@ export const signup = async (table: 'user_account' | 'employer', body: IUser | I
   const user = await knex(table)
     .insert({ ...body, password: hashedPassword })
     .returning(['email', 'id']);
-  return user;
+  return user[0];
 };

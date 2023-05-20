@@ -15,13 +15,13 @@ export const signup = async (req: Request, res: Response) => {
 
   const user = await crud.signup('user_account', body);
 
-  await knex('profile').insert({ id: user[0].id });
+  await knex('profile').insert({ id: user.id });
 
-  const accessToken = jwt.sign({ id: user[0].id, email: user[0].email }, JWT_SECRET + '', {
+  const accessToken = jwt.sign({ id: user.id, email: user.email }, JWT_SECRET + '', {
     expiresIn: JWT_ACCESS_EXPIRY + '',
   });
 
-  res.status(201).send({ user: user[0], accessToken });
+  res.status(201).send({ user: user, accessToken });
 };
 
 // HERE  LOGIN

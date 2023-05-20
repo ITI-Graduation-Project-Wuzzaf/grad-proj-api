@@ -13,16 +13,16 @@ export const show = async (req: Request, res: Response) => {
 
 export const update = async (req: Request, res: Response) => {
   const employer = await crud.update('employer', res.locals.userId, req.body);
-  res.status(200).send(employer[0]);
+  res.status(200).send(employer);
 };
 
 export const signup = async (req: Request, res: Response) => {
   const { confirmPassword, ...body } = req.body;
   const employer = await crud.signup('employer', body);
 
-  const accessToken = jwt.sign({ id: employer[0].id, email: employer[0].email }, JWT_SECRET + '', {
+  const accessToken = jwt.sign({ id: employer.id, email: employer.email }, JWT_SECRET + '', {
     expiresIn: JWT_ACCESS_EXPIRY + '',
   });
 
-  res.status(201).send({ employer: employer[0], accessToken });
+  res.status(201).send({ employer: employer, accessToken });
 };
