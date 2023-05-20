@@ -17,7 +17,7 @@ export const signup = async (req: Request, res: Response) => {
 
   await knex('profile').insert({ id: user.id });
 
-  const accessToken = jwt.sign({ id: user.id, email: user.email }, JWT_SECRET + '', {
+  const accessToken = jwt.sign({ id: user.id, email: user.email, role: user.role }, JWT_SECRET + '', {
     expiresIn: JWT_ACCESS_EXPIRY + '',
   });
 
@@ -39,9 +39,13 @@ export const login = async (req: Request, res: Response) => {
   }
 
   const { password: omitted, ...user } = existingUser;
-  const accessToken = jwt.sign({ id: existingUser.id, email: existingUser.email }, JWT_SECRET + '', {
-    expiresIn: JWT_ACCESS_EXPIRY + '',
-  });
+  const accessToken = jwt.sign(
+    { id: existingUser.id, email: existingUser.email, role: existingUser.role },
+    JWT_SECRET + '',
+    {
+      expiresIn: JWT_ACCESS_EXPIRY + '',
+    },
+  );
 
   res.status(200).send({ user, accessToken });
 };

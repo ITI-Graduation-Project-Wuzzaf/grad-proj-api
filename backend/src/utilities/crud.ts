@@ -47,10 +47,13 @@ export const signup = async (table: 'user_account' | 'employer', body: IUser | I
 
   const hashedPassword = await bcrypt.hash(body.password + PEPPER, Number(SR));
 
-  const user = await knex(table)
+  const instance = await knex(table)
     .insert({ ...body, password: hashedPassword })
-    .returning(['email', 'id']);
-  return user[0];
+    .returning('*');
+
+  const { password, ...user } = instance[0];
+
+  return user;
 };
 
 export const searchAccounts = async (email: string) => {
