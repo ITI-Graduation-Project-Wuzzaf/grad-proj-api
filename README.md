@@ -118,6 +118,11 @@ npm run format               - format code with prettier
 | POST   | /v1/employers      | signup as an employer       |
 | GET    | /v1/employers/{id} | retrive employer data       |
 | PATCH  | /v1/employers      | update employer data        |
+| GET    | /v1/jobs           | fetch all jobs              |
+| POST   | /v1/jobs           | create new job posting      |
+| GET    | /v1/jobs/{id}      | retrive a job posting data  |
+| PATCH  | /v1/jobs/{id}      | update job posting data     |
+| DELETE | /v1/jobs/{id}      | delete job posting          |
 
 ## Testing
 
