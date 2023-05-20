@@ -7,10 +7,10 @@ import { employerSignupSchema, employerUpdateSchema } from '../../utilities/vali
 
 const router = Router();
 
-router.get('/employer/:id', requireAuth, show);
+router.get('/employers/:id', requireAuth, show);
 
-router.post('/employer', validateRequest(employerSignupSchema), signup);
+router.post('/employers', validateRequest(employerSignupSchema), signup);
 
-router.patch('/employer', requireAuth, validateRequest(employerUpdateSchema), update);
+router.patch('/employers', requireAuth, validateRequest(employerUpdateSchema), update);
 
 export { router as employerRouter };

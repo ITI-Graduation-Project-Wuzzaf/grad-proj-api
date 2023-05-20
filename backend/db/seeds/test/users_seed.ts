@@ -21,4 +21,7 @@ export async function seed(knex: Knex): Promise<void> {
   await knex.raw("select setval('user_account_id_seq', max(id)) from user_account");
 
   await knex('profile').insert([{ id: 1 }, { id: 2 }, { id: 3 }, { id: 4 }, { id: 5 }]);
+
+  await knex('employer').insert([{ id: 1, email: 'jobify@company.com', password, name: 'Jobify' }]);
+  await knex.raw("select setval('employer_id_seq', max(id)) from employer");
 }

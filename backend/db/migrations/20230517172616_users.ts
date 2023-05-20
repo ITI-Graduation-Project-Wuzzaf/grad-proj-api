@@ -42,8 +42,8 @@ export async function up(knex: Knex): Promise<void> {
     })
     .createTable('job', (t) => {
       t.increments('id').primary().unique();
-      t.string('title', 200);
-      t.text('description');
+      t.string('title', 200).notNullable();
+      t.text('description').notNullable();
       t.enu('type', ['Part-time', 'Full-time']);
       t.string('location');
       t.integer('min_salary');
