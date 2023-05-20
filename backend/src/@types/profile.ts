@@ -4,7 +4,7 @@ export interface IProfile {
   city: string;
   job: string;
   gender: 'M' | 'F';
-  experience_level: string;
+  experience: string;
   birthdate: Date;
   links: string[];
   skills: string[];
