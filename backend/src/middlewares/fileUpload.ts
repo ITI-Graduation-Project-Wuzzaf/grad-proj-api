@@ -22,10 +22,6 @@ const s3 = new S3Client({
   },
 });
 
-// IMPORTANT  to handle
-
-// 5- investigate ACL options
-
 export const fileUpload = (req: Request, res: Response, _next: NextFunction) => {
   const form = formidable({ allowEmptyFiles: false, maxFileSize: 5 * 1024 * 1024 }); //5mb max
 

@@ -2,27 +2,18 @@ import { Request, Response } from 'express';
 import jwt from 'jsonwebtoken';
 import bcrypt from 'bcrypt';
 
+import knex from '../../db/knex';
+import * as crud from '../utilities/crud';
+
 import { BadRequestError } from '../errors/BadRequestError';
 
-import knex from '../../db/knex';
-
-const { SR, PEPPER, JWT_SECRET, JWT_ACCESS_EXPIRY } = process.env;
+const { PEPPER, JWT_SECRET, JWT_ACCESS_EXPIRY } = process.env;
 
 // HERE  signup
 export const signup = async (req: Request, res: Response) => {
-  const { email, password, first_name, last_name } = req.body;
+  const { confirmPassword, ...body } = req.body;
 
-  const existingUser = await knex.select('*').from('user_account').where('email', 'ILIKE', email).first();
-
-  if (existingUser) {
-    throw new BadRequestError(`Email: ${email} is already used`);
-  }
-
-  const hashedPassword = await bcrypt.hash(password + PEPPER, Number(SR));
-
-  const user = await knex('user_account')
-    .insert({ email, password: hashedPassword, first_name, last_name })
-    .returning(['email', 'id']);
+  const user = await crud.signup('user_account', body);
 
   await knex('profile').insert({ id: user[0].id });
 

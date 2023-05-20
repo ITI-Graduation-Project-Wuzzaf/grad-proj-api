@@ -1,19 +1,14 @@
 import { Request, Response } from 'express';
-import knex from '../../db/knex';
-import { NotFoundError } from '../errors/notFoundError';
+
+import * as crud from '../utilities/crud';
 
 export const show = async (req: Request, res: Response) => {
   const id = +req.params.id;
-
-  const profile = await knex.select('*').from('profile').where({ id }).first();
-  if (!profile) {
-    throw new NotFoundError();
-  }
+  const profile = await crud.show('profile', id);
   res.send(profile);
 };
 
 export const update = async (req: Request, res: Response) => {
-  const profile = await knex('profile').where({ id: res.locals.userId }).update(req.body).returning('*');
-
+  const profile = await crud.update('profile', res.locals.userId, req.body);
   res.status(200).send(profile[0]);
 };
