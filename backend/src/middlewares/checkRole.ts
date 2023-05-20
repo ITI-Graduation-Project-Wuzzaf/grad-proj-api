@@ -2,7 +2,7 @@ import { NextFunction, Request, Response } from 'express';
 
 import { NotAuthorizeError } from '../errors/notAuthorizedError';
 
-const checkRole =
+export const checkRole =
   (...roles: string[]) =>
   (_req: Request, res: Response, next: NextFunction) => {
     if (!roles.includes(res.locals.userRole)) {
@@ -10,5 +10,3 @@ const checkRole =
     }
     next();
   };
-
-export default checkRole;
