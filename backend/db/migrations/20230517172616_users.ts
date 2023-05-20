@@ -25,9 +25,23 @@ export async function up(knex: Knex): Promise<void> {
       t.specificType('links', 'text[]');
       t.text('portfolio');
       t.timestamps();
+    })
+    .createTable('employer', (t) => {
+      t.increments('id').primary().unique();
+      t.string('email', 100).unique().notNullable();
+      t.string('password', 100).notNullable();
+      t.string('name', 100).notNullable();
+      t.string('country', 60);
+      t.string('city', 60);
+      t.text('logo');
+      t.text('description');
+      t.text('website');
+      t.string('industry', 100);
+      t.integer('size');
+      t.timestamps();
     });
 }
 
 export async function down(knex: Knex): Promise<void> {
-  return knex.schema.dropTable('profile').dropTable('user_account');
+  return knex.schema.dropTable('profile').dropTable('user_account').dropTable('employer');
 }
