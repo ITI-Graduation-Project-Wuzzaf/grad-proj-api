@@ -6,6 +6,7 @@ import { NotAuthorizeError } from '../errors/notAuthorizedError';
 interface UserPayload {
   id: number;
   email: string;
+  role: string;
 }
 
 export const requireAuth = (req: Request, res: Response, next: NextFunction) => {
@@ -19,7 +20,7 @@ export const requireAuth = (req: Request, res: Response, next: NextFunction) => 
     const payload = verify(token, process.env.JWT_SECRET as string) as UserPayload;
 
     res.locals.userId = payload.id;
-    res.locals.email = payload.email;
+    res.locals.role = payload.role;
     next();
   } catch (err) {
     throw new BadRequestError('Access token has already expired ');

@@ -1,19 +1,10 @@
 import request from 'supertest';
 import { app } from '../../../app';
 
-const signin = async () => {
-  const res = await request(app).post('/v1/login').send({
-    email: 'bassel@test.com',
-    password: '12345678',
-  });
-  const token = res.body.accessToken;
-  return token;
-};
-
 describe('Profile routes', () => {
   describe('GET /v1/profiles/:id', () => {
     it('Should retrive user profile', async () => {
-      const token = await signin();
+      const token = await global.signin('bassel@test.com');
       await request(app).get('/v1/profiles/1').set('Authorization', `Bearer ${token}`).expect(200);
     });
     it('Should return 401 if user is not logged in', async () => {
@@ -21,14 +12,14 @@ describe('Profile routes', () => {
     });
 
     it("Should return 404 when given user id that doesn't exists", async () => {
-      const token = await signin();
+      const token = await global.signin('bassel@test.com');
       await request(app).get('/v1/profiles/0951').set('Authorization', `Bearer ${token}`).expect(404);
     });
   });
 
   describe('PATCH /v1/profiles', () => {
     it('Should update user profile when giving valid data', async () => {
-      const token = await signin();
+      const token = await global.signin('bassel@test.com');
       const res = await request(app)
         .patch('/v1/profiles')
         .send({ city: 'Port Said' })
@@ -43,7 +34,7 @@ describe('Profile routes', () => {
     });
 
     it('Should return 422 when given no parameters', async () => {
-      const token = await signin();
+      const token = await global.signin('bassel@test.com');
       await request(app).patch('/v1/profiles').set('Authorization', `Bearer ${token}`).expect(422);
     });
   });

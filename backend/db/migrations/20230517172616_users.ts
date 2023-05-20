@@ -8,6 +8,7 @@ export async function up(knex: Knex): Promise<void> {
       t.string('password', 100).notNullable();
       t.string('first_name', 100).notNullable();
       t.string('last_name', 100).notNullable();
+      t.string('role', 10).defaultTo('user');
     })
     .createTable('profile', (t) => {
       t.integer('id').unsigned().notNullable().primary().references('id').inTable('user_account');
@@ -38,12 +39,13 @@ export async function up(knex: Knex): Promise<void> {
       t.text('website');
       t.string('industry', 100);
       t.integer('size');
+      t.string('role', 10).defaultTo('employer');
       t.timestamps();
     })
     .createTable('job', (t) => {
       t.increments('id').primary().unique();
-      t.string('title', 200);
-      t.text('description');
+      t.string('title', 200).notNullable();
+      t.text('description').notNullable();
       t.enu('type', ['Part-time', 'Full-time']);
       t.string('location');
       t.integer('min_salary');

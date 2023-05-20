@@ -10,6 +10,7 @@ export interface IEmployer {
   website: string;
   industry: string;
   size: number;
+  role: string;
   created_at: string;
   updated_at: string;
 }

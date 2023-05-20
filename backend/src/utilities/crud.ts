@@ -25,6 +25,7 @@ export const create = async (table: Table, body: object) => {
 
 export const update = async (table: Table, id: number, body: object) => {
   const instance = await knex(table).where({ id }).update(body).returning('*');
+
   if (!instance.length) {
     throw new NotFoundError();
   }
@@ -39,7 +40,7 @@ export const remove = async (table: Table, id: number) => {
 };
 
 export const signup = async (table: 'user_account' | 'employer', body: IUser | IEmployer) => {
-  const existingUser = await knex.select('*').from(table).where('email', 'ILIKE', body.email).first();
+  const existingUser = await searchAccounts(body.email);
 
   if (existingUser) {
     throw new BadRequestError(`Email: ${body.email} is already used`);
@@ -47,8 +48,20 @@ export const signup = async (table: 'user_account' | 'employer', body: IUser | I
 
   const hashedPassword = await bcrypt.hash(body.password + PEPPER, Number(SR));
 
-  const user = await knex(table)
+  const instance = await knex(table)
     .insert({ ...body, password: hashedPassword })
-    .returning(['email', 'id']);
-  return user[0];
+    .returning('*');
+
+  const { password, ...user } = instance[0];
+
+  return user;
+};
+
+export const searchAccounts = async (email: string) => {
+  const existingUser = await knex.select('*').from('user_account').where('email', 'ILIKE', email);
+  if (existingUser[0]) {
+    return existingUser[0];
+  }
+  const existingEmp = await knex.select('*').from('employer').where('email', 'ILIKE', email);
+  return existingEmp[0];
 };

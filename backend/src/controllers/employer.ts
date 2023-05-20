@@ -20,7 +20,7 @@ export const signup = async (req: Request, res: Response) => {
   const { confirmPassword, ...body } = req.body;
   const employer = await crud.signup('employer', body);
 
-  const accessToken = jwt.sign({ id: employer.id, email: employer.email }, JWT_SECRET + '', {
+  const accessToken = jwt.sign({ id: employer.id, email: employer.email, role: employer.role }, JWT_SECRET + '', {
     expiresIn: JWT_ACCESS_EXPIRY + '',
   });
 

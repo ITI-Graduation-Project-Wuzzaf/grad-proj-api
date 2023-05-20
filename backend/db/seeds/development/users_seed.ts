@@ -11,11 +11,11 @@ export async function seed(knex: Knex): Promise<void> {
 
   // Inserts seed entries
   await knex('user_account').insert([
-    { id: 1, email: 'bassel@test.com', password, first_name: 'Bassel', last_name: 'Salah' },
-    { id: 2, email: 'hussien@test.com', password, first_name: 'Hussien', last_name: 'Tarek' },
-    { id: 3, email: 'youssef@test.com', password, first_name: 'Youssef', last_name: 'Said' },
-    { id: 4, email: 'noran@test.com', password, first_name: 'Noran', last_name: 'Nabil' },
-    { id: 5, email: 'rewan@test.com', password, first_name: 'Rewan', last_name: 'Hamed' },
+    { id: 1, email: 'bassel@test.com', password, first_name: 'Bassel', last_name: 'Salah', role: 'admin' },
+    { id: 2, email: 'hussien@test.com', password, first_name: 'Hussien', last_name: 'Tarek', role: 'admin' },
+    { id: 3, email: 'youssef@test.com', password, first_name: 'Youssef', last_name: 'Said', role: 'admin' },
+    { id: 4, email: 'noran@test.com', password, first_name: 'Noran', last_name: 'Nabil', role: 'admin' },
+    { id: 5, email: 'rewan@test.com', password, first_name: 'Rewan', last_name: 'Hamed', role: 'admin' },
   ]);
   await knex.raw("select setval('user_account_id_seq', max(id)) from user_account");
 
