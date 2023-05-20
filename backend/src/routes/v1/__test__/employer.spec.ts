@@ -2,15 +2,6 @@ import request from 'supertest';
 
 import { app } from '../../../app';
 
-const signin = async () => {
-  const res = await request(app).post('/v1/login').send({
-    email: 'jobify@company.com',
-    password: '12345678',
-  });
-  const token = res.body.accessToken;
-  return token;
-};
-
 describe('Employer routes', () => {
   describe('POST /v1/employers', () => {
     it('Should signup new employer with valid credentials', async () => {
@@ -68,7 +59,7 @@ describe('Employer routes', () => {
 
   describe('GET /v1/employers/:id', () => {
     it('Should retrive user profile', async () => {
-      const token = await signin();
+      const token = await global.signin('jobify@company.com');
       await request(app).get('/v1/employers/1').set('Authorization', `Bearer ${token}`).expect(200);
     });
 
@@ -77,14 +68,14 @@ describe('Employer routes', () => {
     });
 
     it("Should return 404 when given user id that doesn't exists", async () => {
-      const token = await signin();
+      const token = await global.signin('jobify@company.com');
       await request(app).get('/v1/employers/0951').set('Authorization', `Bearer ${token}`).expect(404);
     });
   });
 
   describe('PATCH /v1/employers', () => {
     it('Should update employer data with valid parameters', async () => {
-      const token = await signin();
+      const token = await global.signin('jobify@company.com');
       const res = await request(app)
         .patch('/v1/employers')
         .send({ country: 'Egypt' })
@@ -99,7 +90,7 @@ describe('Employer routes', () => {
     });
 
     it('Should return 422 when given no parameters', async () => {
-      const token = await signin();
+      const token = await global.signin('jobify@company.com');
       await request(app).patch('/v1/employers').set('Authorization', `Bearer ${token}`).expect(422);
     });
   });

@@ -25,6 +25,7 @@ export const create = async (table: Table, body: object) => {
 
 export const update = async (table: Table, id: number, body: object) => {
   const instance = await knex(table).where({ id }).update(body).returning('*');
+
   if (!instance.length) {
     throw new NotFoundError();
   }

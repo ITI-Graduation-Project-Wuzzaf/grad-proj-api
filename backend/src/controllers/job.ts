@@ -19,7 +19,7 @@ export const index = async (req: Request, res: Response) => {
 };
 
 export const create = async (req: Request, res: Response) => {
-  const job = await crud.create('job', req.body);
+  const job = await crud.create('job', { ...req.body, employer_id: res.locals.userId });
   res.status(201).send(job);
 };
 
