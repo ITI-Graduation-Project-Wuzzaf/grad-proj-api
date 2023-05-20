@@ -28,6 +28,10 @@
     {
       "name": "users",
       "description": "User related endpoints"
+    },
+    {
+      "name": "employers",
+      "description": "employers/companies endpoints"
     }
   ],
   "schemes": ["http"],
@@ -225,7 +229,149 @@
           "401": {
             "description": "User is not authorized"
           },
-          "422": { "description": "User profile cannot be found" }
+          "422": { "description": "Validation error happened" }
+        }
+      }
+    },
+    "/employers": {
+      "post": {
+        "tags": ["employers"],
+        "summary": "Create a new employer",
+        "description": "creating new employer to post jobs",
+        "consumes": ["application/json"],
+        "produces": ["application/json"],
+        "operationId": "createEmployer",
+        "requestBody": {
+          "description": "Created employer object",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "email": {
+                    "type": "string",
+                    "example": "company@example.com"
+                  },
+                  "password": {
+                    "type": "string",
+                    "example": "00000000"
+                  },
+                  "confirmPassword": {
+                    "type": "string",
+                    "example": "00000000"
+                  },
+                  "name": {
+                    "type": "string",
+                    "example": "jobify"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "User employer successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "user": {
+                      "type": "object",
+                      "properties": {
+                        "email": {
+                          "type": "string",
+                          "example": "company@example.com"
+                        },
+                        "id": { "type": "number", "example": 10 }
+                      }
+                    },
+                    "accessToken": { "type": "string" }
+                  }
+                }
+              }
+            }
+          },
+          "400": { "description": "A duplicate email detected" },
+          "422": { "description": "Validation error happened" }
+        }
+      },
+      "patch": {
+        "tags": ["employers"],
+        "summary": "Update employer data",
+        "description": "Updates the current logged in employer data",
+        "operationId": "updateEmployer",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "requestBody": {
+          "description": "Updated employer data",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Employer"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Employer data is updated",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Employer"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "User is not authorized"
+          },
+          "422": { "description": "Validation error happened" }
+        }
+      }
+    },
+    "/employers/{id}": {
+      "get": {
+        "tags": ["employers"],
+        "summary": "Employer data",
+        "description": "Get a specific employer data",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "description": "id of the employer to get",
+            "required": true,
+            "type": "string",
+            "example": 12
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Employer data is retrived",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Employer"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "User is not authorized"
+          },
+          "404": { "description": "Employer cannot be found" }
         }
       }
     }
@@ -299,6 +445,41 @@
           },
           "portfolio": {
             "type": "string"
+          }
+        }
+      },
+      "Employer": {
+        "type": "object",
+        "required": ["email", "password", "name"],
+        "properties": {
+          "id": {
+            "type": "number",
+            "description": "employer id"
+          },
+          "email": {
+            "type": "string",
+            "description": "unique email for every account"
+          },
+          "name": {
+            "type": "string",
+            "example": "jobify"
+          },
+          "country": {
+            "type": "string",
+            "example": "Egypt"
+          },
+          "city": {
+            "type": "string",
+            "example": "Port Said"
+          },
+          "description": {
+            "type": "string"
+          },
+          "industry": {
+            "type": "string"
+          },
+          "size": {
+            "type": "number"
           }
         }
       }
