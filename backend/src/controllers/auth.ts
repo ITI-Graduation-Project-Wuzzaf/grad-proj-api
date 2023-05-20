@@ -28,7 +28,7 @@ export const signup = async (req: Request, res: Response) => {
 export const login = async (req: Request, res: Response) => {
   const { email, password } = req.body;
 
-  const existingUser = await knex.select('*').from('user_account').where('email', 'ILIKE', email).first();
+  const existingUser = await crud.searchAccounts(email);
 
   if (!existingUser) {
     throw new BadRequestError('Invalid email or password.');
