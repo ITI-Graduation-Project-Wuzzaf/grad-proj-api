@@ -16,7 +16,7 @@ describe('Employer routes', () => {
         })
         .expect(201);
 
-      expect(res.body.employer.id).toEqual(2);
+      expect(res.body.employer.id).toEqual(3);
       expect(res.body.employer.email).toEqual(email);
       expect(res.body.accessToken).toBeDefined();
     });

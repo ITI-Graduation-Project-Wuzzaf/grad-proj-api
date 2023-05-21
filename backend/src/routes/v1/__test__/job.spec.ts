@@ -96,6 +96,15 @@ describe('Job routes', () => {
       await request(app).patch('/v1/jobs/1').set('Authorization', `Bearer ${token}`).expect(401);
     });
 
+    it('Should return 404 if user is trying to update others job posts', async () => {
+      const token = await global.signin('jobify@company.com');
+      await request(app)
+        .patch('/v1/jobs/2')
+        .send({ title: 'Cloud Architect' })
+        .set('Authorization', `Bearer ${token}`)
+        .expect(404);
+    });
+
     it("Should return 404 when job isn't found", async () => {
       const token = await global.signin('jobify@company.com');
       await request(app)
@@ -124,6 +133,11 @@ describe('Job routes', () => {
     it('Should return 401 if user is not an employer', async () => {
       const token = await global.signin('bassel@test.com');
       await request(app).delete('/v1/jobs/1').set('Authorization', `Bearer ${token}`).expect(401);
+    });
+
+    it('Should return 404 if user is trying to delete others job posts', async () => {
+      const token = await global.signin('jobify@company.com');
+      await request(app).delete('/v1/jobs/2').set('Authorization', `Bearer ${token}`).expect(404);
     });
 
     it("Should return 404 when job isn't found", async () => {
