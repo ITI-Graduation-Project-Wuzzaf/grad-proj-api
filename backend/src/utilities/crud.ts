@@ -23,17 +23,25 @@ export const create = async (table: Table, body: object) => {
   return instance[0];
 };
 
-export const update = async (table: Table, id: number, body: object) => {
-  const instance = await knex(table).where({ id }).update(body).returning('*');
-
+export const update = async (table: Table, id: number, body: object, col?: string, owner?: number) => {
+  const query = knex(table).where({ id });
+  if (col) {
+    query.andWhere(col, owner);
+  }
+  const instance = await query.update(body).returning('*');
   if (!instance.length) {
     throw new NotFoundError();
   }
   return instance[0];
 };
 
-export const remove = async (table: Table, id: number) => {
-  const instance = await knex(table).where({ id }).del().returning('*');
+export const remove = async (table: Table, id: number, col?: string, owner?: number) => {
+  const query = knex(table).where({ id });
+  if (col) {
+    query.andWhere(col, owner);
+  }
+
+  const instance = await query.delete().returning('id');
   if (!instance.length) {
     throw new NotFoundError();
   }

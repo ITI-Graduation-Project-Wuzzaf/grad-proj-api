@@ -3,6 +3,7 @@ import { Request, Response } from 'express';
 import * as crud from '../utilities/crud';
 import knex from '../../db/knex';
 
+const owner = 'employer_id';
 const jobsPerPage = 8;
 
 export const index = async (req: Request, res: Response) => {
@@ -31,11 +32,12 @@ export const show = async (req: Request, res: Response) => {
 
 export const update = async (req: Request, res: Response) => {
   const id = +req.params.id;
-  const job = await crud.update('job', id, req.body);
+  const job = await crud.update('job', id, req.body, owner, res.locals.userId);
   res.send(job);
 };
 export const remove = async (req: Request, res: Response) => {
   const id = +req.params.id;
-  await crud.remove('job', id);
+
+  await crud.remove('job', id, owner, res.locals.userId);
   res.send(`Job ${id} has been deleted.`);
 };
