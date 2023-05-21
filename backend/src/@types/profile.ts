@@ -4,12 +4,15 @@ export interface IProfile {
   city: string;
   job: string;
   gender: 'M' | 'F';
-  experience_level: string;
+  experience: string;
+  birthdate: Date;
   links: string[];
+  skills: string[];
+  portfolio: string;
   profile_picture: string;
   cv: string;
   bio: string;
-  user_id: number;
+  university: string;
   created_at: string;
   updated_at: string;
 }

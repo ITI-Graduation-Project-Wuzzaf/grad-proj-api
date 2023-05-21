@@ -27,14 +27,15 @@ this is still under progress
 
 ### 1) Clone the repository, install node packages.
 
-``` 
+```
 //on local
 git clone https://github.com/ITI-Graduation-Project-Wuzzaf/grad-proj-api
 cd backend
 npm install
 ```
 
-### 2) Setting database and user. 
+### 2) Setting database and user.
+
 For setting up postgres you will need:
 
 1. Create a database for the project.
@@ -43,22 +44,24 @@ For setting up postgres you will need:
 4. Run seeding script `npm run seed:run` (Optional)
 
 ### 3) Environment variables.
+
 To run this project, you will need to add the following environment variables to your .env file
 
 - Database: `POSTGRES_HOST`
-`POSTGRES_PORT`
-`POSTGRES_USER`
-`POSTGRES_PASSWORD`
-`POSTGRES_DB`
-`POSTGRES_DB_TEST`
+  `POSTGRES_PORT`
+  `POSTGRES_USER`
+  `POSTGRES_PASSWORD`
+  `POSTGRES_DB`
+  `POSTGRES_DB_TEST`
 
-- JWT:  `JWT_SECRET`
-`JWT_ACCESS_EXPIRY`
+- JWT: `JWT_SECRET`
+  `JWT_ACCESS_EXPIRY`
 
 - Hashing: `SR`
-`PEPPER`
+  `PEPPER`
 
 ## Using Docker
+
 to start the server with docker you will need to add 2 more environment variables for pgadmin
 `PGADMIN_DEFAULT_EMAIL`
 and
@@ -66,15 +69,17 @@ and
 to be able to login into pgadmin
 then run
 
- `docker compose up --build` 
+`docker compose up --build`
 and you are good to go
-
 
 ## Usage
 
 ### Scripts
+
+Make sure you are inside backend folder to be able to run the following scripts.
+
 ```
-npm start                   - runs the app in production 
+npm start                   - runs the app in production
 
 npm run start:dev           - runs the app watch mode in typescript
 
@@ -103,17 +108,21 @@ npm run format               - format code with prettier
 
 ### Endpoints
 
-
-
-| Method                             | Path      |  Description      |
-| ---------------------------------- | --------- | --------- |
-| GET                       | /api-docs      | Swagger API documentation |
-| POST                            | /v1/signup | Signing up  |
-| POST                            | /v1/login       | login |
-
-
-
-
+| Method | Path               | Description                 |
+| ------ | ------------------ | --------------------------- |
+| GET    | /api-docs          | Swagger API documentation   |
+| POST   | /v1/signup         | Signing up                  |
+| POST   | /v1/login          | login                       |
+| GET    | /v1/profiles/{id}  | retrive user profile        |
+| PATCH  | /v1/profiles       | update current user profile |
+| POST   | /v1/employers      | signup as an employer       |
+| GET    | /v1/employers/{id} | retrive employer data       |
+| PATCH  | /v1/employers      | update employer data        |
+| GET    | /v1/jobs           | fetch all jobs              |
+| POST   | /v1/jobs           | create new job posting      |
+| GET    | /v1/jobs/{id}      | retrive a job posting data  |
+| PATCH  | /v1/jobs/{id}      | update job posting data     |
+| DELETE | /v1/jobs/{id}      | delete job posting          |
 
 ## Testing
 
