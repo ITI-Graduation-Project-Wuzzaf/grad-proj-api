@@ -6,7 +6,12 @@ export const jobCreateSchema = joi.object({
   type: joi.string().valid('Part-time', 'Full-time').required(),
   location: joi.string().required(),
   min_salary: joi.number().integer().positive(),
-  max_salary: joi.number().integer().positive(),
+  max_salary: joi
+    .number()
+    .integer()
+    .positive()
+    .greater(joi.ref('min_salary'))
+    .message('max salary must be greater than min salary'),
   experience: joi.string().max(100),
   skills: joi.array().items(joi.string()).min(2).max(30),
 });
@@ -18,7 +23,12 @@ export const jobUpdateSchema = joi
     type: joi.string().valid('Part-time', 'Full-time'),
     location: joi.string(),
     min_salary: joi.number().integer().positive(),
-    max_salary: joi.number().integer().positive(),
+    max_salary: joi
+      .number()
+      .integer()
+      .positive()
+      .greater(joi.ref('min_salary'))
+      .message('max salary must be greater than min salary'),
     experience: joi.string().max(100),
     skills: joi.array().items(joi.string()).min(2).max(30),
   })
