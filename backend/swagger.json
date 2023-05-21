@@ -32,6 +32,10 @@
     {
       "name": "employers",
       "description": "employers/companies endpoints"
+    },
+    {
+      "name": "jobs",
+      "description": "jobs posting endpoints"
     }
   ],
   "schemes": ["http"],
@@ -374,6 +378,197 @@
           "404": { "description": "Employer cannot be found" }
         }
       }
+    },
+    "/jobs": {
+      "get": {
+        "tags": ["jobs"],
+        "summary": "Get all job posts",
+        "description": "Get paginated job posts",
+        "responses": {
+          "200": {
+            "description": "array of job posts and pagination info",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "jobs": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/Job"
+                      }
+                    },
+                    "pagination": {
+                      "type": "object",
+                      "properties": {
+                        "page": {
+                          "type": "number"
+                        },
+                        "next": { "type": "boolean" },
+                        "prev": { "type": "boolean" },
+                        "numberOfPages": { "type": "number" },
+                        "total": { "type": "number" }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": ["jobs"],
+        "summary": "Create a new job post",
+        "description": "Make a new job post to find job seekers",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "consumes": ["application/json"],
+        "produces": ["application/json"],
+        "operationId": "createJob",
+        "requestBody": {
+          "description": "Created job post object",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Job"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "User employer successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Job"
+                }
+              }
+            }
+          },
+          "401": { "description": "Must be authenticated employer" },
+          "422": { "description": "Validation error happened" }
+        }
+      }
+    },
+    "/jobs/{id}": {
+      "get": {
+        "tags": ["jobs"],
+        "summary": "job post data",
+        "description": "Get a specific job post data",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "description": "id of the job to get",
+            "required": true,
+            "type": "string",
+            "example": 9
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "job data is retrived",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Job"
+                }
+              }
+            }
+          },
+
+          "404": { "description": "job post cannot be found" }
+        }
+      },
+      "patch": {
+        "tags": ["jobs"],
+        "summary": "update job post",
+        "description": "update a specific job post data",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "description": "id of job post to update",
+            "required": true,
+            "type": "string",
+            "example": 12
+          }
+        ],
+        "requestBody": {
+          "description": "new job post data",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Job"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "job post data has been updated",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Job"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Must be authenticated employer"
+          },
+          "404": { "description": "job post cannot be found" },
+          "422": { "description": "Validation error happened" }
+        }
+      },
+      "delete": {
+        "tags": ["jobs"],
+        "summary": "delete a job post",
+        "description": "Delete job posts that you craeted",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "description": "id of the job post to delete",
+            "required": true,
+            "type": "string",
+            "example": 12
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Job post has been deleted",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Must be authenticated employer"
+          },
+          "404": { "description": "Job post cannot be found" }
+        }
+      }
     }
   },
   "components": {
@@ -480,6 +675,47 @@
           },
           "size": {
             "type": "number"
+          }
+        }
+      },
+      "Job": {
+        "type": "object",
+        "required": ["title", "description", "type", "location"],
+        "properties": {
+          "id": {
+            "type": "number",
+            "description": "job posting id"
+          },
+          "title": {
+            "type": "string",
+            "example": "Senior Fullstack developer"
+          },
+          "description": {
+            "type": "string",
+            "example": "Senior Fullstack developer who can use MERN/MEAN"
+          },
+          "type": {
+            "type": "string",
+            "enum": ["Part-time", "Full-time"]
+          },
+          "location": {
+            "type": "string",
+            "example": "Remote"
+          },
+          "min_salary": {
+            "type": "number",
+            "example": "1000"
+          },
+          "max_salary": {
+            "type": "number",
+            "example": "2500"
+          },
+          "experience": {
+            "type": "string"
+          },
+          "skills": {
+            "type": "array",
+            "items": { "type": "string" }
           }
         }
       }
