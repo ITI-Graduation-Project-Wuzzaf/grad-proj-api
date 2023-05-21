@@ -1,22 +1,19 @@
 import { Request, Response } from 'express';
 
 import * as crud from '../utilities/crud';
-import knex from '../../db/knex';
 
 const owner = 'employer_id';
 const jobsPerPage = 8;
+
+// const page = Number(req.query.page) || 1;
+// const { pagination, instances } = await crud.pagination('job', page, jobsPerPage);
 
 export const index = async (req: Request, res: Response) => {
   // IMPORTANT  we still need to know what will be the search target
   // const query = (req.query.query as string) || '';
   const page = Number(req.query.page) || 1;
-  const skip = (page - 1) * jobsPerPage;
-  const total = +(await knex('job').count('id'))[0].count;
-  const numberOfPages = Math.ceil(total / jobsPerPage);
-  const next = page * jobsPerPage < total ? true : false;
-  const prev = page > 1 ? true : false;
-  const jobs = await knex('job').limit(jobsPerPage).offset(skip);
-  res.send({ pagination: { page, next, prev, numberOfPages, total }, jobs });
+  const { pagination, instances } = await crud.pagination('job', page, jobsPerPage);
+  res.send({ pagination, jobs: instances });
 };
 
 export const create = async (req: Request, res: Response) => {
@@ -35,6 +32,7 @@ export const update = async (req: Request, res: Response) => {
   const job = await crud.update('job', id, req.body, owner, res.locals.userId);
   res.send(job);
 };
+
 export const remove = async (req: Request, res: Response) => {
   const id = +req.params.id;
 
