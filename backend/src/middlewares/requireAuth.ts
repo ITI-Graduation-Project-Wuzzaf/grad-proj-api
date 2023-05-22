@@ -19,6 +19,7 @@ export const requireAuth = (req: Request, res: Response, next: NextFunction) => 
 
     const payload = verify(token, process.env.JWT_SECRET as string) as UserPayload;
 
+    console.log('pew pew pew ewpepwpe');
     res.locals.userId = payload.id;
     res.locals.role = payload.role;
     next();

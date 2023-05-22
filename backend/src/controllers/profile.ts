@@ -9,8 +9,6 @@ export const show = async (req: Request, res: Response) => {
 };
 
 export const update = async (req: Request, res: Response) => {
-  console.log(req.body);
-
   const profile = await crud.update('profile', res.locals.userId, req.body);
   res.status(200).send(profile);
 };

@@ -13,8 +13,9 @@ beforeAll(async () => {
 });
 
 beforeEach(async () => {
+  await knex.raw('TRUNCATE TABLE application RESTART IDENTITY CASCADE');
   await knex.raw('TRUNCATE TABLE profile RESTART IDENTITY CASCADE');
-  // await knex.raw('TRUNCATE TABLE job RESTART IDENTITY CASCADE');
+  await knex.raw('TRUNCATE TABLE job RESTART IDENTITY CASCADE');
   await knex.raw('TRUNCATE TABLE user_account RESTART IDENTITY CASCADE');
   await knex.raw('TRUNCATE TABLE employer RESTART IDENTITY CASCADE');
   await knex.seed.run();
