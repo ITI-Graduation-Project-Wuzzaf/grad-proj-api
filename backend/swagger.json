@@ -573,6 +573,237 @@
           "404": { "description": "Job post cannot be found" }
         }
       }
+    },
+    "/jobs/{id}/applications": {
+      "get": {
+        "tags": ["applications"],
+        "summary": "job applications",
+        "description": "Get applications of users who applied for a job",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "description": "id of the job to get application for",
+            "required": true,
+            "type": "string",
+            "example": 25
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "job applications retrived",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "applications": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/Application"
+                      }
+                    },
+                    "pagination": {
+                      "type": "object",
+                      "properties": {
+                        "page": {
+                          "type": "number"
+                        },
+                        "next": { "type": "boolean" },
+                        "prev": { "type": "boolean" },
+                        "numberOfPages": { "type": "number" },
+                        "total": { "type": "number" }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": { "description": "Must be authenticated employer" },
+          "404": { "description": "application cannot be found" }
+        }
+      }
+    },
+    "/users/applications": {
+      "get": {
+        "tags": ["applications"],
+        "summary": "user applications",
+        "description": "Get all user submitted applications",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "user applications retrived",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "applications": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/Application"
+                      }
+                    },
+                    "pagination": {
+                      "type": "object",
+                      "properties": {
+                        "page": {
+                          "type": "number"
+                        },
+                        "next": { "type": "boolean" },
+                        "prev": { "type": "boolean" },
+                        "numberOfPages": { "type": "number" },
+                        "total": { "type": "number" }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": { "description": "Must be authenticated user" }
+        }
+      }
+    },
+    "/applications/{id}": {
+      "get": {
+        "tags": ["applications"],
+        "summary": "application data",
+        "description": "Get an application by id",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "description": "id of application to get",
+            "required": true,
+            "type": "string",
+            "example": 7
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "application data has been retrived",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Application"
+                }
+              }
+            }
+          },
+          "401": { "description": "User is not loggedin" },
+          "404": { "description": "application cannot be found, or application is not related to the current user" }
+        }
+      },
+      "patch": {
+        "tags": ["applications"],
+        "summary": "update an application",
+        "description": "Update an application that is submitted to apply for a job",
+        "operationId": "updateApplication",
+        "requestBody": {
+          "description": "new application data",
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "cv": {
+                    "type": "string"
+                  },
+                  "cover_letter": {
+                    "type": "string"
+                  },
+                  "additional_info": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "User has applied for a job",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Application"
+                }
+              }
+            }
+          },
+          "401": { "description": "Must be authenticated user" },
+          "404": {
+            "description": "The job user is applying for is not found, or user trying to update other user application"
+          },
+          "422": { "description": "Validation error happened" }
+        }
+      }
+    },
+    "/applications": {
+      "post": {
+        "tags": ["applications"],
+        "summary": "apply for a job",
+        "description": "Create a new application, to apply for a job",
+        "operationId": "submitApplication",
+        "requestBody": {
+          "description": "Created application object",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "job_id": {
+                    "type": "number",
+                    "example": "4"
+                  },
+                  "cv": {
+                    "type": "string"
+                  },
+                  "cover_letter": {
+                    "type": "string"
+                  },
+                  "additional_info": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "User has applied for a job",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Application"
+                }
+              }
+            }
+          },
+          "400": { "description": "User trying to apply for a job more than once" },
+          "401": { "description": "Must be authenticated user" },
+          "404": { "description": "The job user is applying for is not found" },
+          "422": { "description": "Validation error happened" }
+        }
+      }
     }
   },
   "components": {

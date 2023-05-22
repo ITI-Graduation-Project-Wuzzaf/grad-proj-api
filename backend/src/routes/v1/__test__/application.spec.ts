@@ -77,19 +77,19 @@ describe('Application routes', () => {
       expect(res.body.status).toEqual('submitted');
     });
 
-    it('Should respond with 401 if not logged in or an employer', async () => {
-      const token = await global.signin('jobify@company.com');
-      await request(app).post('/v1/applications').expect(401);
-      await request(app).post('/v1/applications').set('Authorization', `Bearer ${token}`).expect(401);
-    });
-
-    it('Should respond with 403 when user try to apply for the same job more than once', async () => {
+    it('Should respond with 400 when user try to apply for the same job more than once', async () => {
       const token = await global.signin('bassel@test.com');
       await request(app)
         .post('/v1/applications')
         .send({ job_id: 3, cv: 'Bonzo cv' })
         .set('Authorization', `Bearer ${token}`)
         .expect(400);
+    });
+
+    it('Should respond with 401 if not logged in or an employer', async () => {
+      const token = await global.signin('jobify@company.com');
+      await request(app).post('/v1/applications').expect(401);
+      await request(app).post('/v1/applications').set('Authorization', `Bearer ${token}`).expect(401);
     });
 
     it("Should responds with 404, if the job user applying for doesn't exists", async () => {
