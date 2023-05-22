@@ -36,6 +36,10 @@
     {
       "name": "jobs",
       "description": "jobs posting endpoints"
+    },
+    {
+      "name": "applications",
+      "description": "appplication related endpoints"
     }
   ],
   "schemes": ["http"],
@@ -716,6 +720,37 @@
           "skills": {
             "type": "array",
             "items": { "type": "string" }
+          }
+        }
+      },
+      "Application": {
+        "type": "object",
+        "required": ["job_id", "cv"],
+        "properties": {
+          "id": {
+            "type": "number",
+            "description": "application id"
+          },
+          "user_id": {
+            "type": "number",
+            "example": "id of user applying for the job"
+          },
+          "job_id": {
+            "type": "number",
+            "example": "id of the job user is applying for"
+          },
+          "status": {
+            "type": "string",
+            "enum": ["submitted", "rejected"]
+          },
+          "cv": {
+            "type": "string"
+          },
+          "cover_letter": {
+            "type": "string"
+          },
+          "additional_info": {
+            "type": "string"
           }
         }
       }
