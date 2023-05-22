@@ -21,7 +21,7 @@ Rest API using Node, express, and postgres for ITI graduation project (jobify), 
 
 ## Data Shape
 
-this is still under progress
+<img src="https://github.com/ITI-Graduation-Project-Wuzzaf/grad-proj-api/assets/77590428/d0725634-4b06-443f-b1fb-d2ee63311b9f" width="700px" alt="diagram"/>
 
 ## Installation
 
