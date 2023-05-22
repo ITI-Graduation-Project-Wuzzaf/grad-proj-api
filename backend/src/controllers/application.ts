@@ -6,6 +6,7 @@ import knex from '../../db/knex';
 
 import { IJob } from '../@types/job';
 import { NotFoundError } from '../errors/notFoundError';
+import { BadRequestError } from '../errors/BadRequestError';
 
 const appPerPage = 6;
 
@@ -52,9 +53,13 @@ export const show = async (req: Request, res: Response) => {
 };
 
 export const create = async (req: Request, res: Response) => {
-  // NOTE  could check if the job that user applies for is available
-  // also maybe prevent user from submitting more than 1 application for same job
-  const application = await crud.create('application', { ...req.body, user_id: res.locals.userId });
+  const application = await crud.create('application', { ...req.body, user_id: res.locals.userId }).catch((err) => {
+    if (err.constraint === 'application_user_id_job_id_unique') {
+      throw new BadRequestError('User applying for the same job more than once');
+    }
+
+    throw new NotFoundError();
+  });
   res.status(201).send(application);
 };
 

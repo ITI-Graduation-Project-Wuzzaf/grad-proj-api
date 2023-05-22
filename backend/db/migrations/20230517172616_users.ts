@@ -64,6 +64,8 @@ export async function up(knex: Knex): Promise<void> {
       t.text('cover_letter');
       t.text('additional_info');
       t.timestamps();
+
+      t.unique(['user_id', 'job_id']);
     });
 }
 
