@@ -21,7 +21,7 @@ Rest API using Node, express, and postgres for ITI graduation project (jobify), 
 
 ## Data Shape
 
-this is still under progress
+<img src="https://github.com/ITI-Graduation-Project-Wuzzaf/grad-proj-api/assets/77590428/d0725634-4b06-443f-b1fb-d2ee63311b9f" width="700px" alt="diagram"/>
 
 ## Installation
 
@@ -108,21 +108,26 @@ npm run format               - format code with prettier
 
 ### Endpoints
 
-| Method | Path               | Description                 |
-| ------ | ------------------ | --------------------------- |
-| GET    | /api-docs          | Swagger API documentation   |
-| POST   | /v1/signup         | Signing up                  |
-| POST   | /v1/login          | login                       |
-| GET    | /v1/profiles/{id}  | retrive user profile        |
-| PATCH  | /v1/profiles       | update current user profile |
-| POST   | /v1/employers      | signup as an employer       |
-| GET    | /v1/employers/{id} | retrive employer data       |
-| PATCH  | /v1/employers      | update employer data        |
-| GET    | /v1/jobs           | fetch all jobs              |
-| POST   | /v1/jobs           | create new job posting      |
-| GET    | /v1/jobs/{id}      | retrive a job posting data  |
-| PATCH  | /v1/jobs/{id}      | update job posting data     |
-| DELETE | /v1/jobs/{id}      | delete job posting          |
+| Method | Path                       | Description                                   |
+| ------ | -------------------------- | --------------------------------------------- |
+| GET    | /api-docs                  | Swagger API documentation                     |
+| POST   | /v1/signup                 | Signing up                                    |
+| POST   | /v1/login                  | login                                         |
+| GET    | /v1/profiles/{id}          | retrive user profile                          |
+| PATCH  | /v1/profiles               | update current user profile                   |
+| POST   | /v1/employers              | signup as an employer                         |
+| GET    | /v1/employers/{id}         | retrive employer data                         |
+| PATCH  | /v1/employers              | update employer data                          |
+| GET    | /v1/jobs                   | fetch all jobs                                |
+| POST   | /v1/jobs                   | create new job posting                        |
+| GET    | /v1/jobs/{id}              | retrive a job posting data                    |
+| PATCH  | /v1/jobs/{id}              | update job posting data                       |
+| DELETE | /v1/jobs/{id}              | delete job posting                            |
+| GET    | /v1/jobs/{id}/applications | fetch all applications for a job              |
+| GET    | /v1/users/applications     | retrives all the user applications            |
+| GET    | /v1/applications/{id}      | retrive an application data                   |
+| POST   | /v1/applications           | apply for a job, and create a new application |
+| PATCH  | /v1/applications/{id}      | update submitted application                  |
 
 ## Testing
 

@@ -9,6 +9,6 @@ import { checkRole } from '../../middlewares/checkRole';
 const router = Router();
 
 router.get('/profiles/:id', requireAuth, show);
-router.patch('/profiles', requireAuth, checkRole('user'), validateRequest(profileSchema), update);
+router.patch('/profiles', requireAuth, checkRole('user', 'admin'), validateRequest(profileSchema), update);
 
 export { router as profileRouter };

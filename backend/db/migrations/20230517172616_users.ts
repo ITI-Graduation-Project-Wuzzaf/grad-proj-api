@@ -54,9 +54,26 @@ export async function up(knex: Knex): Promise<void> {
       t.specificType('skills', 'varchar(100)[]');
       t.integer('employer_id').unsigned().notNullable().references('id').inTable('employer');
       t.timestamp('created_at').defaultTo(knex.fn.now());
+    })
+    .createTable('application', (t) => {
+      t.increments('id').primary().unique();
+      t.integer('user_id').unsigned().notNullable().references('id').inTable('user_account');
+      t.integer('job_id').unsigned().notNullable().references('id').inTable('job');
+      t.enu('status', ['submitted', 'rejected']).defaultTo('submitted');
+      t.text('cv');
+      t.text('cover_letter');
+      t.text('additional_info');
+      t.timestamps();
+
+      t.unique(['user_id', 'job_id']);
     });
 }
 
 export async function down(knex: Knex): Promise<void> {
-  return knex.schema.dropTable('profile').dropTable('job').dropTable('user_account').dropTable('employer');
+  return knex.schema
+    .dropTable('application')
+    .dropTable('profile')
+    .dropTable('job')
+    .dropTable('user_account')
+    .dropTable('employer');
 }
