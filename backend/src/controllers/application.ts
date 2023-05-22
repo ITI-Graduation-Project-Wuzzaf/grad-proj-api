@@ -51,3 +51,15 @@ export const show = async (req: Request, res: Response) => {
 
   res.send(application);
 };
+
+export const create = async (req: Request, res: Response) => {
+  // NOTE  could check if the job that user applies for is available
+  const application = await crud.create('application', { ...req.body, user_id: res.locals.userId });
+  res.status(201).send(application);
+};
+
+export const update = async (req: Request, res: Response) => {
+  const id = +req.params.id;
+  const application = await crud.update('application', id, req.body, 'user_id', res.locals.userId);
+  res.send(application);
+};
