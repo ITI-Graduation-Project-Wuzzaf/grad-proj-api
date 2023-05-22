@@ -34,26 +34,26 @@ export const userApplications = async (req: Request, res: Response) => {
 
 export const show = async (req: Request, res: Response) => {
   const id = +req.params.id;
+
   const application = await knex('application')
-    .join('user_account', 'user_id', '=', 'id')
-    .join('job', 'job_id', '=', 'id')
-    .where('applicatio.id', id)
-    // .andWhere(function () {
-    //   this.where('user_account.id', res.locals.userId).orWhere('job.employer_id', res.locals.userId);
-    // })
-    .andWhere('user_account.id', res.locals.userId)
-    .orWhere('job.employer_id', res.locals.userId)
+    .join('user_account', 'application.user_id', '=', 'user_account.id')
+    .join('job', 'application.job_id', '=', 'job.id')
+    .where('application.id', id)
+    .andWhere(function () {
+      this.where('user_account.id', res.locals.userId).orWhere('job.employer_id', res.locals.userId);
+    })
     .select('application.*');
 
   if (!application[0]) {
     throw new NotFoundError();
   }
 
-  res.send(application);
+  res.send(application[0]);
 };
 
 export const create = async (req: Request, res: Response) => {
   // NOTE  could check if the job that user applies for is available
+  // also maybe prevent user from submitting more than 1 application for same job
   const application = await crud.create('application', { ...req.body, user_id: res.locals.userId });
   res.status(201).send(application);
 };
