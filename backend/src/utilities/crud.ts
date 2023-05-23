@@ -5,6 +5,7 @@ import { BadRequestError } from '../errors/BadRequestError';
 import { NotFoundError } from '../errors/notFoundError';
 import { IUser } from '../@types/user';
 import { IEmployer } from '../@types/employer';
+import { isPwned } from './preventPwned';
 
 type Table = 'user_account' | 'profile' | 'employer' | 'job' | 'application';
 
@@ -68,6 +69,9 @@ export const signup = async (table: 'user_account' | 'employer', body: IUser | I
   if (existingUser) {
     throw new BadRequestError(`Email: ${body.email} is already used`);
   }
+
+  const isBreached = await isPwned(body.password);
+  if (isBreached) throw new BadRequestError('Password is vulnerable, Please use another password.');
 
   const hashedPassword = await bcrypt.hash(body.password + PEPPER, Number(SR));
 
