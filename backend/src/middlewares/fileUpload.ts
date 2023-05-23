@@ -14,7 +14,7 @@ const fileTypes = [
 
 type UploadPromise = void | CompleteMultipartUploadCommandOutput | AbortMultipartUploadCommandOutput;
 
-const { S3_KEY, S3_SECRET, S3_REGION, S3_BUCKET } = process.env;
+const { S3_KEY, S3_SECRET, S3_REGION, S3_BUCKET, CF_DOMAIN } = process.env;
 
 const s3 = new S3Client({
   region: S3_REGION,
@@ -25,7 +25,7 @@ const s3 = new S3Client({
 });
 
 export const fileUpload = (req: Request, res: Response, next: NextFunction) => {
-  const form = formidable({ allowEmptyFiles: false, maxFileSize: 5 * 1024 * 1024 }); //5mb max
+  const form = formidable({ allowEmptyFiles: false, maxFileSize: 5 * 1024 * 1024, maxFiles: 2 }); //5mb max
 
   form.parse(req, async (err, fields, files) => {
     if (err) {
@@ -58,7 +58,7 @@ export const fileUpload = (req: Request, res: Response, next: NextFunction) => {
 
       uploadPromises.push(
         upload.done().then((data: CompleteMultipartUploadCommandOutput | void) => {
-          req.body[fieldName] = data?.Location;
+          req.body[fieldName] = `${CF_DOMAIN}/${data?.Key}`;
         }),
       );
     });
