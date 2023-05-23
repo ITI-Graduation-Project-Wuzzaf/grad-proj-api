@@ -10,8 +10,8 @@ describe('Auth routes', () => {
         .post('/v1/signup')
         .send({
           email,
-          password: 'password',
-          confirmPassword: 'password',
+          password: 'c701b6de',
+          confirmPassword: 'c701b6de',
           first_name: 'heya',
           last_name: 'heya',
         })
@@ -27,8 +27,8 @@ describe('Auth routes', () => {
         .post('/v1/signup')
         .send({
           email: 'test',
-          password: 'password',
-          confirmPassword: 'password',
+          password: 'c701b6de',
+          confirmPassword: 'c701b6de',
           first_name: 'heya',
           last_name: 'heya',
         })
@@ -58,8 +58,8 @@ describe('Auth routes', () => {
         .post('/v1/signup')
         .send({
           email,
-          password: 'password',
-          confirmPassword: 'password',
+          password: 'c701b6de',
+          confirmPassword: 'c701b6de',
           first_name: 'heya',
           last_name: 'heya',
         })
