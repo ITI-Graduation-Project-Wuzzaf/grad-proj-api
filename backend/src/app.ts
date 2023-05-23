@@ -27,6 +27,8 @@ if (process.env.NODE_ENV !== 'test') {
 app.use(helmet());
 app.use(hpp());
 app.use('/api-docs', swaggerUI.serve, swaggerUI.setup(swaggerDocument));
-app.post('/upload', fileUpload);
+app.post('/upload', fileUpload, (req, res) => {
+  res.send('passed middleware');
+});
 app.use(routes);
 app.use(errorHandler);
