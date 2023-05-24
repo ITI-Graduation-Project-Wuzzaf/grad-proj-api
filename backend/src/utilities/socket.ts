@@ -2,7 +2,7 @@ import { Server } from 'socket.io';
 import { Server as httpServer } from 'http';
 
 import * as notifications from './notifications';
-import chalk from 'chalk';
+import { notifSchema, socketSchema } from './validation/socket';
 
 export const socketIO = (server: httpServer) => {
   const io = new Server(server, {
@@ -12,12 +12,17 @@ export const socketIO = (server: httpServer) => {
   });
 
   io.on('connection', (socket) => {
-    socket.on('add-user', async (id: number, role: string) => {
+    socket.on('add-user', async ({ id, role }: { id: number; role: string }) => {
+      const { error } = socketSchema.validate({ id, role });
+      if (error) return;
+
       const room = `${role}_${id}`;
+      console.log(room);
+
       socket.join(room);
       // io.to(room) to even include the sender
 
-      socket.emit('all-notifications', await notifications.unRead(id, role));
+      socket.emit('unread-notifications', await notifications.unRead(id, role));
 
       socket.on('disconnect', () => {
         if (io.sockets.adapter.rooms.get(room)?.size === 0) {
@@ -27,15 +32,21 @@ export const socketIO = (server: httpServer) => {
     });
 
     socket.on('read-notifications', async (id: number, role: string) => {
+      const { error } = socketSchema.validate({ id, role });
+      if (error) return;
+
       const room = `${role}_${id}`;
 
       socket.emit('read-notifications', await notifications.index(id, role));
       await notifications.update(id, role);
-      socket.to(room).emit('all-notifications', 0);
+      socket.to(room).emit('unread-notifications', 0);
     });
 
     // NOTE  HERE  this should be handled from the backend totally just emit the event
     socket.on('subscription-notification', async (id: number, role: string) => {
+      const { error } = socketSchema.validate({ id, role });
+      if (error) return;
+
       const room = `${role}_${id}`;
       const url = '/subscription';
       const content = 'View premium subscription features.';
@@ -45,7 +56,8 @@ export const socketIO = (server: httpServer) => {
     });
 
     socket.on('notification', async (id: number, role: string, jobId: number, jobName: string, appId: number) => {
-      console.log(chalk.bgGreen('hello'));
+      const { error } = notifSchema.validate({ id, role, jobId, jobName, appId });
+      if (error) return;
 
       const room = `${role}_${id}`;
       const url = `/jobs/${jobId}/applications/${appId}}`;

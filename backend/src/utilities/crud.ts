@@ -24,7 +24,6 @@ export const pagination = async (table: Table, page: number, perPage: number, wh
   const next = page * perPage < total ? true : false;
   const prev = page > 1 ? true : false;
   const instances = await q2.limit(perPage).offset(skip);
-  console.log(instances);
 
   return { pagination: { page, next, prev, numberOfPages, total }, instances };
 };

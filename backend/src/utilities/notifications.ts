@@ -2,7 +2,7 @@ import knex from '../../db/knex';
 
 export const unRead = async (id: number, role: string) => {
   const where = { recipient_id: id, recipient_type: role, is_read: false };
-  const unreadCount = +(await knex('notification').where(where).count('id'))[0];
+  const unreadCount = +(await knex('notification').where(where).count('id'))[0].count;
 
   return unreadCount;
 };
