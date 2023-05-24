@@ -66,11 +66,20 @@ export async function up(knex: Knex): Promise<void> {
       t.timestamps();
 
       t.unique(['user_id', 'job_id']);
+    })
+    .createTable('notification', (t) => {
+      t.increments('id').primary();
+      t.text('content').notNullable();
+      t.text('url');
+      t.integer('recipient_id').notNullable().unsigned();
+      t.string('recipient_type', 20).notNullable();
+      t.boolean('is_read').defaultTo(false);
     });
 }
 
 export async function down(knex: Knex): Promise<void> {
   return knex.schema
+    .dropTable('notification')
     .dropTable('application')
     .dropTable('profile')
     .dropTable('job')

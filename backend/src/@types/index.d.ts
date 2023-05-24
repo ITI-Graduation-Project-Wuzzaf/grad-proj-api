@@ -4,6 +4,7 @@ import { IProfile } from './profile';
 import { IEmployer } from './employer';
 import { IJob } from './job';
 import { IApplication } from './application';
+import { INotification } from './notification';
 
 declare module 'knex/types/tables' {
   interface Tables {
@@ -12,6 +13,7 @@ declare module 'knex/types/tables' {
     employer: IEmployer;
     job: IJob;
     application: IApplication;
+    notification: INotification;
     // first where and select return type, second update, third upsert
     // NOTE  purpose of below types is for only insert and update
     user_composite: Knex.CompositeTableType<
