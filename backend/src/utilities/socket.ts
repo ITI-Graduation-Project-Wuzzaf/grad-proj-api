@@ -11,8 +11,19 @@ export const socketIO = (server: httpServer) => {
     },
   });
 
+  interface ISocketData {
+    id: number;
+    role: string;
+  }
+
+  interface INotif extends ISocketData {
+    jobId: number;
+    jobName: string;
+    appId: number;
+  }
+
   io.on('connection', (socket) => {
-    socket.on('add-user', async ({ id, role }: { id: number; role: string }) => {
+    socket.on('add-user', async ({ id, role }: ISocketData) => {
       const { error } = socketSchema.validate({ id, role });
       if (error) return;
 
@@ -31,7 +42,7 @@ export const socketIO = (server: httpServer) => {
       });
     });
 
-    socket.on('read-notifications', async (id: number, role: string) => {
+    socket.on('read-notifications', async ({ id, role }: ISocketData) => {
       const { error } = socketSchema.validate({ id, role });
       if (error) return;
 
@@ -43,7 +54,7 @@ export const socketIO = (server: httpServer) => {
     });
 
     // NOTE  HERE  this should be handled from the backend totally just emit the event
-    socket.on('subscription-notification', async (id: number, role: string) => {
+    socket.on('subscription-notification', async ({ id, role }: ISocketData) => {
       const { error } = socketSchema.validate({ id, role });
       if (error) return;
 
@@ -55,7 +66,7 @@ export const socketIO = (server: httpServer) => {
       io.to(room).emit('notification', notification);
     });
 
-    socket.on('notification', async (id: number, role: string, jobId: number, jobName: string, appId: number) => {
+    socket.on('notification', async ({ id, role, jobId, jobName, appId }: INotif) => {
       const { error } = notifSchema.validate({ id, role, jobId, jobName, appId });
       if (error) return;
 
