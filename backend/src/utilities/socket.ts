@@ -75,7 +75,7 @@ export const socketIO = (server: httpServer) => {
       const content =
         role === 'employer'
           ? `A new candidate has applied for ${jobName}, Don't miss out.`
-          : `A response has been sent by the recuriter of ${jobName}.`;
+          : `A response has been sent by the recruiter of ${jobName}.`;
       const data = { content, url, recipient_id: id, recipient_type: role };
       const notification = await notifications.create(data);
       io.to(room).emit('notification', notification);

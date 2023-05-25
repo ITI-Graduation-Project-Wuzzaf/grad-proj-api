@@ -3,7 +3,7 @@ import { Request, Response } from 'express';
 import * as crud from '../utilities/crud';
 
 const owner = 'employer_id';
-const jobsPerPage = 8;
+const jobsPerPage = 6;
 
 // const page = Number(req.query.page) || 1;
 // const { pagination, instances } = await crud.pagination('job', page, jobsPerPage);
