@@ -10,8 +10,8 @@ describe('Employer routes', () => {
         .post('/v1/employers')
         .send({
           email,
-          password: 'password',
-          confirmPassword: 'password',
+          password: 'c701b6de',
+          confirmPassword: 'c701b6de',
           name: 'company',
         })
         .expect(201);

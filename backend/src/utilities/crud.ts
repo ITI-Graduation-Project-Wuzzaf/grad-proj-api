@@ -5,22 +5,25 @@ import { BadRequestError } from '../errors/BadRequestError';
 import { NotFoundError } from '../errors/notFoundError';
 import { IUser } from '../@types/user';
 import { IEmployer } from '../@types/employer';
+import { isPwned } from './preventPwned';
 
 type Table = 'user_account' | 'profile' | 'employer' | 'job' | 'application';
 
 const { SR, PEPPER } = process.env;
 
 export const pagination = async (table: Table, page: number, perPage: number, where?: object) => {
-  const query = knex(table);
+  const q1 = knex(table);
+  const q2 = knex(table);
   if (where) {
-    query.where(where);
+    q1.where(where);
+    q2.where(where);
   }
   const skip = (page - 1) * perPage;
-  const total = +(await query.count('id'))[0].count;
+  const total = +(await q1.count('id'))[0].count;
   const numberOfPages = Math.ceil(total / perPage);
   const next = page * perPage < total ? true : false;
   const prev = page > 1 ? true : false;
-  const instances = await query.limit(perPage).offset(skip);
+  const instances = await q2.limit(perPage).offset(skip);
 
   return { pagination: { page, next, prev, numberOfPages, total }, instances };
 };
@@ -68,6 +71,9 @@ export const signup = async (table: 'user_account' | 'employer', body: IUser | I
   if (existingUser) {
     throw new BadRequestError(`Email: ${body.email} is already used`);
   }
+
+  const isBreached = await isPwned(body.password);
+  if (isBreached) throw new BadRequestError('Password is vulnerable, Please use another password.');
 
   const hashedPassword = await bcrypt.hash(body.password + PEPPER, Number(SR));
 
