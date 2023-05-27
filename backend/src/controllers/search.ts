@@ -1,5 +1,8 @@
 import { Request, Response } from 'express';
+
 import { client } from '../utilities/elasticSearch';
+import { searchSchema } from '../utilities/validation/search';
+import { RequestValidationError } from '../errors/requestValidationError';
 
 interface ISearchQuery {
   index: string;
@@ -17,10 +20,15 @@ interface ISearchQuery {
 }
 
 export const search = async (req: Request, res: Response) => {
-  const query = req.body.query;
-  const category = req.body.category;
+  const { error } = searchSchema.validate(req.query);
+  if (error) {
+    throw new RequestValidationError(error);
+  }
+
+  const query = req.query.query + '';
+  const category = req.query.category + '';
   const page = Number(req.query.page) || 1;
-  const size = Number(req.query.page) || 1;
+  const size = Number(req.query.size) || 6;
   const from = (page - 1) * size;
 
   const searchQuery: ISearchQuery = {
@@ -61,7 +69,6 @@ export const search = async (req: Request, res: Response) => {
   }
 
   const result = await client.search<ISearchQuery>(searchQuery);
-  console.log(result);
 
   res.send(result.hits.hits);
 };
