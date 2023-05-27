@@ -5,6 +5,8 @@ import { profileRouter } from './profile';
 import { employerRouter } from './employer';
 import { jobRouter } from './job';
 import { applicationRouter } from './application';
+import { searchRouter } from './search';
+
 import { requireAuth } from '../../middlewares/requireAuth';
 
 const router = Router();
@@ -14,5 +16,6 @@ router.use(profileRouter);
 router.use(employerRouter);
 router.use(jobRouter);
 router.use(requireAuth, applicationRouter);
+router.use(searchRouter);
 
 export default router;

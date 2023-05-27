@@ -14,7 +14,6 @@ import swaggerDocument from '../swagger.json';
 import errorHandler from './middlewares/errorHandler';
 import routes from './routes';
 import { fileUpload } from './middlewares/fileUpload';
-import { client } from './utilities/elasticSearch';
 
 export const app = express();
 
@@ -30,28 +29,6 @@ app.use(hpp());
 app.use('/api-docs', swaggerUI.serve, swaggerUI.setup(swaggerDocument));
 app.post('/upload', fileUpload, (req, res) => {
   res.send('passed middleware');
-});
-app.get('/search', async (req, res) => {
-  const query = req.body.query;
-  try {
-    const searchResult = await client.search({
-      index: 'jobs',
-      body: {
-        suggest: {
-          job_suggest: {
-            prefix: query,
-            completion: {
-              field: 'title',
-            },
-          },
-        },
-      },
-    });
-    console.log(searchResult);
-    res.json(searchResult.hits.hits);
-  } catch (err) {
-    console.log(err);
-  }
 });
 
 app.use(routes);

@@ -37,8 +37,12 @@ export const show = async (table: Table, id: number) => {
 };
 
 export const create = async (table: Table, body: object) => {
-  const instance = await knex(table).insert(body).returning('*');
-  return instance[0];
+  try {
+    const instance = await knex(table).insert(body).returning('*');
+    return instance[0];
+  } catch (err) {
+    console.log(err);
+  }
 };
 
 export const update = async (table: Table, id: number, body: object, col?: string, owner?: number) => {

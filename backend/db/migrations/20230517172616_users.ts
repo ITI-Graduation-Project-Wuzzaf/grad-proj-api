@@ -25,7 +25,6 @@ export async function up(knex: Knex): Promise<void> {
       t.specificType('skills', 'varchar(100)[]');
       t.specificType('links', 'text[]');
       t.text('portfolio');
-      t.timestamps();
     })
     .createTable('employer', (t) => {
       t.increments('id').primary().unique();
@@ -51,7 +50,7 @@ export async function up(knex: Knex): Promise<void> {
       t.integer('min_salary');
       t.integer('max_salary');
       t.string('experience', 100);
-      t.enu('category', ['Development', 'Design', 'Marketing', 'Business', 'Support']);
+      t.enu('category', ['Development', 'Design', 'Marketing', 'Business', 'Support']).notNullable();
       t.specificType('skills', 'varchar(100)[]');
       t.integer('employer_id').unsigned().notNullable().references('id').inTable('employer');
       // t.timestamp('created_at').defaultTo(knex.fn.now());
