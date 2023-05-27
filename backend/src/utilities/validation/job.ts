@@ -5,6 +5,7 @@ export const jobCreateSchema = joi.object({
   description: joi.string().max(600).required(),
   type: joi.string().valid('Part-time', 'Full-time').required(),
   location: joi.string().required(),
+  category: joi.string().valid('Development', 'Design', 'Marketing', 'Business', 'Support').required(),
   min_salary: joi.number().integer().positive(),
   max_salary: joi
     .number()
