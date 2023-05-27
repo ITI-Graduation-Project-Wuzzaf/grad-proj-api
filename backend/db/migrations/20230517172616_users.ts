@@ -51,9 +51,11 @@ export async function up(knex: Knex): Promise<void> {
       t.integer('min_salary');
       t.integer('max_salary');
       t.string('experience', 100);
+      t.enu('category', ['Development', 'Design', 'Marketing', 'Business', 'Support']);
       t.specificType('skills', 'varchar(100)[]');
       t.integer('employer_id').unsigned().notNullable().references('id').inTable('employer');
-      t.timestamp('created_at').defaultTo(knex.fn.now());
+      // t.timestamp('created_at').defaultTo(knex.fn.now());
+      t.timestamps(true, true);
     })
     .createTable('application', (t) => {
       t.increments('id').primary().unique();
