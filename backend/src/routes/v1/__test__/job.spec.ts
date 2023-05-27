@@ -22,6 +22,7 @@ describe('Job routes', () => {
           description: 'We need an experienced react developer asap',
           type: 'Full-time',
           location: 'Remote',
+          category: 'Development',
         })
         .set('Authorization', `Bearer ${token}`)
         .expect(201);

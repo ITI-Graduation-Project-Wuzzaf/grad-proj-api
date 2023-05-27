@@ -33,9 +33,33 @@ export async function seed(knex: Knex): Promise<void> {
 
   //? HERE  JOB
   await knex('job').insert([
-    { id: 1, title: 'DevOps', description: 'Expert Devops', location: 'Cairo', type: 'Part-time', employer_id: 1 },
-    { id: 2, title: 'Node', description: 'Expert Node', location: 'Ismailia', type: 'Full-time', employer_id: 2 },
-    { id: 3, title: 'React', description: 'Expert React', location: 'Port Said', type: 'Full-time', employer_id: 1 },
+    {
+      id: 1,
+      title: 'DevOps',
+      description: 'Expert Devops',
+      location: 'Cairo',
+      type: 'Part-time',
+      category: 'Development',
+      employer_id: 1,
+    },
+    {
+      id: 2,
+      title: 'Node',
+      description: 'Expert Node',
+      location: 'Ismailia',
+      type: 'Full-time',
+      category: 'Development',
+      employer_id: 2,
+    },
+    {
+      id: 3,
+      title: 'React',
+      description: 'Expert React',
+      location: 'Port Said',
+      type: 'Full-time',
+      category: 'Development',
+      employer_id: 1,
+    },
   ]);
   await knex.raw("select setval('job_id_seq', max(id)) from job");
 

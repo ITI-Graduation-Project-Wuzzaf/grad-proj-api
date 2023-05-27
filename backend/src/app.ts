@@ -30,5 +30,6 @@ app.use('/api-docs', swaggerUI.serve, swaggerUI.setup(swaggerDocument));
 app.post('/upload', fileUpload, (req, res) => {
   res.send('passed middleware');
 });
+
 app.use(routes);
 app.use(errorHandler);
