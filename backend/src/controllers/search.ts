@@ -24,9 +24,10 @@ export const search = async (req: Request, res: Response) => {
   if (error) {
     throw new RequestValidationError(error);
   }
+  console.log(req.query);
 
-  const query = req.query.query + '';
-  const category = req.query.category + '';
+  const query = req.query.query as string | undefined;
+  const category = req.query.category as string | undefined;
   const page = Number(req.query.page) || 1;
   const size = Number(req.query.size) || 6;
   const from = (page - 1) * size;
@@ -45,6 +46,8 @@ export const search = async (req: Request, res: Response) => {
     },
   };
   if (category) {
+    console.log(category);
+
     searchQuery.body.query.bool.must.push({
       match: {
         category,
@@ -53,6 +56,8 @@ export const search = async (req: Request, res: Response) => {
   }
 
   if (query) {
+    console.log(query);
+
     searchQuery.body.query.bool.should.push(
       {
         match_phrase_prefix: {
