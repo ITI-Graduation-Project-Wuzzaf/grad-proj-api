@@ -15,7 +15,7 @@ router.use(authRouter);
 router.use(profileRouter);
 router.use(employerRouter);
 router.use(jobRouter);
-router.use(requireAuth, applicationRouter);
 router.use(searchRouter);
+router.use(requireAuth, applicationRouter);
 
 export default router;

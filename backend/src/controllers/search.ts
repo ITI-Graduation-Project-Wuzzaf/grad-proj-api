@@ -7,11 +7,13 @@ interface ISearchQuery {
     query: {
       bool: {
         should: { match_phrase_prefix: { title?: string; name?: string } }[];
-        must: { term: { category: string } }[];
+        must: { match: { category: string } }[];
+        minimum_should_match?: number;
       };
     };
   };
 }
+
 export const search = async (req: Request, res: Response) => {
   const query = req.body.query;
   const category = req.body.category;
@@ -27,6 +29,14 @@ export const search = async (req: Request, res: Response) => {
       },
     },
   };
+  if (category) {
+    searchQuery.body.query.bool.must.push({
+      match: {
+        category,
+      },
+    });
+  }
+
   if (query) {
     searchQuery.body.query.bool.should.push(
       {
@@ -40,19 +50,13 @@ export const search = async (req: Request, res: Response) => {
         },
       },
     );
-  }
-  if (category) {
-    searchQuery.body.query.bool.must.push({
-      term: {
-        category,
-      },
-    });
+    searchQuery.body.query.bool.minimum_should_match = 1;
   }
 
   const result = await client.search<ISearchQuery>(searchQuery);
   console.log(result);
 
-  res.send(result);
+  res.send(result.hits.hits);
 };
 
 // export const autoComplete = (req:Request,res:Response)=>{};
