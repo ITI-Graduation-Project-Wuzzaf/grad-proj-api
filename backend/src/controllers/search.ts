@@ -11,12 +11,17 @@ interface ISearchQuery {
         minimum_should_match?: number;
       };
     };
+    from: number;
+    size: number;
   };
 }
 
 export const search = async (req: Request, res: Response) => {
   const query = req.body.query;
   const category = req.body.category;
+  const page = Number(req.query.page) || 1;
+  const size = Number(req.query.page) || 1;
+  const from = (page - 1) * size;
 
   const searchQuery: ISearchQuery = {
     index: 'jobs',
@@ -27,6 +32,8 @@ export const search = async (req: Request, res: Response) => {
           must: [],
         },
       },
+      from,
+      size,
     },
   };
   if (category) {
