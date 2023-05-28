@@ -14,11 +14,11 @@ export const loginLimiter = rateLimit({
   max: 5,
   standardHeaders: true,
   legacyHeaders: false,
-  message: 'Too many login attempts, please try again later.',
+  message: { errors: [{ message: 'Too many login attempts, please try again later.' }] },
   skipSuccessfulRequests: true,
-  keyGenerator: (_req, res) => {
-    console.log(res.locals.userId + res.locals.role);
+  keyGenerator: (req) => {
+    console.log(req.body.email);
 
-    return res.locals.userId + res.locals.role;
+    return req.body.email;
   },
 });

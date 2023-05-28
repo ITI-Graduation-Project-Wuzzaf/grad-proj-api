@@ -7,7 +7,7 @@ import { limiter, loginLimiter } from '../../middlewares/rateLimit';
 
 const router = Router();
 
-router.post('/signup', limiter(5), validateRequest(signupSchema), signup);
+router.post('/signup', limiter(7), validateRequest(signupSchema), signup);
 
 router.post('/login', loginLimiter, validateRequest(loginSchema), login);
 
