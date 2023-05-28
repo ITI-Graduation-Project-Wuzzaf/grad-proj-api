@@ -6,6 +6,7 @@ import { employerRouter } from './employer';
 import { jobRouter } from './job';
 import { applicationRouter } from './application';
 import { searchRouter } from './search';
+import { paymentRouter } from './payment';
 
 import { requireAuth } from '../../middlewares/requireAuth';
 
@@ -17,5 +18,6 @@ router.use(employerRouter);
 router.use(jobRouter);
 router.use(searchRouter);
 router.use(requireAuth, applicationRouter);
+router.use(paymentRouter);
 
 export default router;
