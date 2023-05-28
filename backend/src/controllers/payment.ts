@@ -3,7 +3,7 @@ import { stripe } from '../utilities/stripe';
 
 import { Request, Response } from 'express';
 
-export const subscription = async (req: Request, res: Response) => {
+export const checkout = async (req: Request, res: Response) => {
   const session = await stripe.checkout.sessions.create({
     payment_method_types: ['card', 'paypal'],
     mode: 'payment',
