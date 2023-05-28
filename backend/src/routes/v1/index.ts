@@ -17,7 +17,7 @@ router.use(profileRouter);
 router.use(employerRouter);
 router.use(jobRouter);
 router.use(searchRouter);
-router.use(paymentRouter);
 router.use(requireAuth, applicationRouter);
+router.use(paymentRouter);
 
 export default router;
