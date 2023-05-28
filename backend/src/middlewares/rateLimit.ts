@@ -6,7 +6,7 @@ export const limiter = (maxRequests: number) =>
     max: maxRequests,
     standardHeaders: true,
     legacyHeaders: false,
-    message: 'Too many requests sent from this IP, please try again later.',
+    message: { errors: [{ message: 'Too many requests sent from this IP, please try again later.' }] },
   });
 
 export const loginLimiter = rateLimit({
@@ -17,8 +17,6 @@ export const loginLimiter = rateLimit({
   message: { errors: [{ message: 'Too many login attempts, please try again later.' }] },
   skipSuccessfulRequests: true,
   keyGenerator: (req) => {
-    console.log(req.body.email);
-
     return req.body.email;
   },
 });
