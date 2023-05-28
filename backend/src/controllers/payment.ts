@@ -3,41 +3,22 @@ import { stripe } from '../utilities/stripe';
 
 import { Request, Response } from 'express';
 
-export const paymentIntent = async (req: Request, res: Response) => {
-  const paymentIntent = await stripe.paymentIntents.create({
-    amount: 9999,
-    currency: 'usd',
-    payment_method_types: ['card', 'paypal'],
-  });
-
-  res.json({ client_secret: paymentIntent.client_secret });
-};
-
 export const subscription = async (req: Request, res: Response) => {
-  const { jobId, jobName } = req.body;
   const session = await stripe.checkout.sessions.create({
     payment_method_types: ['card', 'paypal'],
     mode: 'payment',
 
     line_items: [
       {
-        price_data: {
-          currency: 'usd',
-          product_data: {
-            name: jobName,
-            metadata: {
-              id: jobId,
-            },
-          },
-          unit_amount: 9999,
-        },
+        price: 'price_1NCpCuEQc4Ij7mVsLbyYSyzo',
         quantity: 1,
       },
     ],
-    success_url: '/',
-    cancel_url: '/dsadwqewqe',
+    success_url: 'http://localhost:5000/',
+    cancel_url: 'http://localhost:5000/dsadwqewqe',
   });
-  res.json({ id: session.id });
+
+  res.send({ sessionId: session.id });
 };
 
 export const stripeWebhook = async (req: Request, res: Response) => {
@@ -55,9 +36,14 @@ export const stripeWebhook = async (req: Request, res: Response) => {
     throw new BadRequestError('An error occured while verifying the signature.');
   }
 
-  console.log(stripeEvent.type);
+  switch (stripeEvent.type) {
+    case 'checkout.session.completed':
+      console.log('Remember to send a confirmation email and make the job become featured');
 
-  // console.log(stripeEvent.data.object);
+      break;
+    default:
+      throw new BadRequestError(`Unkown stripe event ${stripeEvent.type}}`);
+  }
 
   res.send({});
 };
