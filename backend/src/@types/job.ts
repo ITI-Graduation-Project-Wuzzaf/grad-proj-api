@@ -9,6 +9,7 @@ export interface IJob {
   max_salary: number;
   experience: string;
   skills: string[];
+  featured: boolean;
   employer_id: number;
   created_at: string;
 }
