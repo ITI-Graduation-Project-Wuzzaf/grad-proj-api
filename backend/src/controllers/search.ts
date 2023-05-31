@@ -46,8 +46,6 @@ export const search = async (req: Request, res: Response) => {
     },
   };
   if (category) {
-    console.log(category);
-
     searchQuery.body.query.bool.must.push({
       match: {
         category,
@@ -56,8 +54,6 @@ export const search = async (req: Request, res: Response) => {
   }
 
   if (query) {
-    console.log(query);
-
     searchQuery.body.query.bool.should.push(
       {
         match_phrase_prefix: {
