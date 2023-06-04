@@ -22,7 +22,7 @@ describe('Profile routes', () => {
       const token = await global.signin('bassel@test.com');
       const res = await request(app)
         .patch('/v1/profiles')
-        .send({ city: 'Port Said' })
+        .field('city', 'Port Said')
         .set('Authorization', `Bearer ${token}`)
         .expect(200);
 

@@ -78,7 +78,7 @@ describe('Employer routes', () => {
       const token = await global.signin('jobify@company.com');
       const res = await request(app)
         .patch('/v1/employers')
-        .send({ country: 'Egypt' })
+        .field('country', 'Egypt')
         .set('Authorization', `Bearer ${token}`)
         .expect(200);
 
