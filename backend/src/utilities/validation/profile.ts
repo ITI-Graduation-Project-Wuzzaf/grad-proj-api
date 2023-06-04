@@ -10,6 +10,8 @@ export const profileSchema = joi
     experience: joi.string().max(100).empty(''),
     birthdate: joi.date().greater('1950-01-01').less('1-12-2010').empty(''),
     // DOB: joi.date().min('1950-01-01').max('2010-12-1'),
+    profile_picture: joi.string().max(250).empty(''),
+    cv: joi.string().max(250).empty(''),
     bio: joi.string().max(250).empty(''),
     skills: joi.array().items(joi.string()).min(2).max(30).empty(''),
     links: joi.array().items(joi.string()).min(1).max(2).empty(''),

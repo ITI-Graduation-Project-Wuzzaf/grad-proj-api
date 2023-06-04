@@ -28,7 +28,6 @@ export const socketIO = (server: httpServer) => {
       if (error) return;
 
       const room = `${role}_${id}`;
-      console.log(room);
 
       socket.join(room);
       // io.to(room) to even include the sender
