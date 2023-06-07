@@ -22,7 +22,7 @@ describe('Profile routes', () => {
       const token = await global.signin('bassel@test.com');
       const res = await request(app)
         .patch('/v1/profiles')
-        .send({ city: 'Port Said' })
+        .field('city', 'Port Said')
         .set('Authorization', `Bearer ${token}`)
         .expect(200);
 
@@ -35,7 +35,11 @@ describe('Profile routes', () => {
 
     it('Should return 422 when given no parameters', async () => {
       const token = await global.signin('bassel@test.com');
-      await request(app).patch('/v1/profiles').set('Authorization', `Bearer ${token}`).expect(422);
+      await request(app)
+        .patch('/v1/profiles')
+        .set('Authorization', `Bearer ${token}`)
+        .set('Content-Type', 'multipart/form-data')
+        .expect(422);
     });
   });
 });

@@ -63,8 +63,8 @@ export async function seed(knex: Knex): Promise<void> {
 
   //? HERE  APPLICATION
   await knex('application').insert([
-    { id: 1, user_id: 1, job_id: 3, status: 'submitted', additional_info: 'pew pew' },
-    { id: 2, user_id: 2, job_id: 2, status: 'submitted', additional_info: 'pew pew' },
+    { id: 1, user_id: 1, job_id: 3, status: 'submitted', cv: 'none', additional_info: 'pew pew' },
+    { id: 2, user_id: 2, job_id: 2, status: 'submitted', cv: 'none', additional_info: 'pew pew' },
   ]);
   await knex.raw("select setval('application_id_seq', max(id)) from application");
 }

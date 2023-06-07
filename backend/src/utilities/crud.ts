@@ -7,7 +7,7 @@ import { IUser } from '../@types/user';
 import { IEmployer } from '../@types/employer';
 import { isPwned } from './preventPwned';
 
-type Table = 'user_account' | 'profile' | 'employer' | 'job' | 'application';
+type Table = 'user_account' | 'profile' | 'employer' | 'job' | 'application' | 'user_saved_job';
 
 const { SR, PEPPER } = process.env;
 
@@ -93,4 +93,82 @@ export const searchAccounts = async (email: string) => {
   }
   const existingEmp = await knex.select('*').from('employer').where('email', 'ILIKE', email);
   return existingEmp[0];
+};
+
+// for single specific entity
+
+export const employerJobs = async (employerId: number, page: number, perPage: number) => {
+  const where = { employer_id: employerId };
+  const skip = (page - 1) * perPage;
+  const total = +(await knex('job').where(where).count('id'))[0].count;
+
+  const jobs = await knex('job')
+    .select('job.*')
+    .count('application.id as applications_number')
+    .leftJoin('application', 'job.id', '=', 'application.job_id')
+    .where(where)
+    .groupBy('job.id')
+    .limit(perPage)
+    .offset(skip);
+
+  const numberOfPages = Math.ceil(total / perPage);
+  const next = page * perPage < total ? true : false;
+  const prev = page > 1 ? true : false;
+  return { pagination: { page, next, prev, numberOfPages, total }, jobs };
+};
+
+export const userSavedJobs = async (userId: number, page: number, perPage: number) => {
+  const where = { user_id: userId };
+  const skip = (page - 1) * perPage;
+  const total = +(
+    await knex('job').join('user_saved_job', 'job.id', '=', 'user_saved_job.job_id').where(where).count('title')
+  )[0].count;
+
+  const jobs = await knex('job')
+    .select('job.*')
+    .join('user_saved_job', 'job.id', '=', 'user_saved_job.job_id')
+    .where(where)
+    .limit(perPage)
+    .offset(skip);
+
+  const numberOfPages = Math.ceil(total / perPage);
+  const next = page * perPage < total ? true : false;
+  const prev = page > 1 ? true : false;
+  return { pagination: { page, next, prev, numberOfPages, total }, jobs };
+};
+
+export const removeSavedJob = async (userId: number, jobId: number) => {
+  const where = { user_id: userId, job_id: jobId };
+
+  const instance = await knex('user_saved_job').delete().where(where).returning('id');
+  if (!instance.length) {
+    throw new NotFoundError();
+  }
+};
+
+// FTS
+
+export const search = async (page: number, perPage: number, query?: string, category?: string) => {
+  const skip = (page - 1) * perPage;
+
+  const q = knex('job').join('employer', 'job.employer_id', '=', 'employer.id');
+  if (query) {
+    q.whereRaw('to_tsvector(title) || to_tsvector(name) || to_tsvector(job.description) @@ to_tsquery(?)', [
+      `'${query}':*`,
+    ]);
+  }
+  if (category) {
+    q.whereRaw(`to_tsvector(category) @@ to_tsquery(?)`, [category]);
+  }
+  const q2 = q.clone();
+
+  const total = +(await q2.count('title'))[0].count;
+
+  const jobs = await q.select('job.*', 'employer.name', 'employer.logo').limit(perPage).offset(skip);
+
+  const numberOfPages = Math.ceil(total / perPage);
+  const next = page * perPage < total ? true : false;
+  const prev = page > 1 ? true : false;
+
+  return { pagination: { page, next, prev, numberOfPages, total }, jobs };
 };

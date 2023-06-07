@@ -12,3 +12,9 @@ export const loginSchema = joi.object({
   email: joi.string().email().required(),
   password: joi.string().min(8).max(16).required(),
 });
+
+export const contactSchema = joi.object({
+  name: joi.string().max(60).required(),
+  email: joi.string().email().required(),
+  message: joi.string().min(10).max(400).required(),
+});
