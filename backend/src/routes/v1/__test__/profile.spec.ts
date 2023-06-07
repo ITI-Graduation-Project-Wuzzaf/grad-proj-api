@@ -35,7 +35,11 @@ describe('Profile routes', () => {
 
     it('Should return 422 when given no parameters', async () => {
       const token = await global.signin('bassel@test.com');
-      await request(app).patch('/v1/profiles').set('Authorization', `Bearer ${token}`).expect(422);
+      await request(app)
+        .patch('/v1/profiles')
+        .set('Authorization', `Bearer ${token}`)
+        .set('Content-Type', 'multipart/form-data')
+        .expect(422);
     });
   });
 });

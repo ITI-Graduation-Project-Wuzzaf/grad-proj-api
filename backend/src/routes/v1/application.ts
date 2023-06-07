@@ -18,4 +18,4 @@ router.get('/applications/:id', show);
 
 router.post('/applications', checkRole('user'), fileUpload, validateRequest(appCreateSchema), create);
 
-router.patch('/applications/:id', checkRole('user'), validateRequest(appUpdateSchema), update);
+router.patch('/applications/:id', checkRole('user'), fileUpload, validateRequest(appUpdateSchema), update);

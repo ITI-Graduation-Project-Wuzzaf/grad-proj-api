@@ -91,7 +91,11 @@ describe('Employer routes', () => {
 
     it('Should return 422 when given no parameters', async () => {
       const token = await global.signin('jobify@company.com');
-      await request(app).patch('/v1/employers').set('Authorization', `Bearer ${token}`).expect(422);
+      await request(app)
+        .patch('/v1/employers')
+        .set('Authorization', `Bearer ${token}`)
+        .set('Content-Type', 'multipart/form-data')
+        .expect(422);
     });
   });
 });
