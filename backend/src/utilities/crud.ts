@@ -137,6 +137,15 @@ export const userSavedJobs = async (userId: number, page: number, perPage: numbe
   return { pagination: { page, next, prev, numberOfPages, total }, jobs };
 };
 
+export const removeSavedJob = async (userId: number, jobId: number) => {
+  const where = { user_id: userId, job_id: jobId };
+
+  const instance = await knex('user_saved_job').delete().where(where).returning('id');
+  if (!instance.length) {
+    throw new NotFoundError();
+  }
+};
+
 // FTS
 
 export const search = async (page: number, perPage: number, query?: string, category?: string) => {

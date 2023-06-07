@@ -1,6 +1,6 @@
 import { Router } from 'express';
 
-import { contactUs, saveJob, userSavedJobs } from '../../controllers/user';
+import { contactUs, removeSavedJob, saveJob, userSavedJobs } from '../../controllers/user';
 
 import { contactSchema } from '../../utilities/validation/user';
 import { validateRequest } from '../../middlewares/validateRequest';
@@ -11,7 +11,9 @@ const router = Router();
 
 router.post('/contact', validateRequest(contactSchema), contactUs);
 
-router.post('/save', requireAuth, checkRole('user'), saveJob);
+router.post('/save-job', requireAuth, checkRole('user'), saveJob);
+
+router.delete('/remove-job', requireAuth, checkRole('user'), removeSavedJob);
 
 router.get('/user/jobs', requireAuth, checkRole('user'), userSavedJobs);
 

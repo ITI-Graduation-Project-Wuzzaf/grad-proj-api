@@ -19,6 +19,14 @@ export const saveJob = async (req: Request, res: Response) => {
   res.sendStatus(204);
 };
 
+export const removeSavedJob = async (req: Request, res: Response) => {
+  const userId = res.locals.userId;
+  const jobId = req.body.jobId;
+
+  await crud.removeSavedJob(userId, jobId);
+  res.sendStatus(204);
+};
+
 export const userSavedJobs = async (req: Request, res: Response) => {
   const page = Number(req.query.page) || 1;
   const { pagination, jobs } = await crud.userSavedJobs(res.locals.userId, page, 8);
