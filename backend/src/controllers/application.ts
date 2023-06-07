@@ -7,6 +7,7 @@ import knex from '../../db/knex';
 import { IJob } from '../@types/job';
 import { NotFoundError } from '../errors/notFoundError';
 import { BadRequestError } from '../errors/BadRequestError';
+import { IProfile } from '../@types/profile';
 
 const appPerPage = 6;
 
@@ -53,6 +54,11 @@ export const show = async (req: Request, res: Response) => {
 };
 
 export const create = async (req: Request, res: Response) => {
+  if (req.body.cv === 'old') {
+    const userProfile = (await crud.show('profile', res.locals.userId)) as IProfile;
+    if (!userProfile.cv) throw new BadRequestError("User Doesn't have a cv already ");
+    req.body.cv = userProfile.cv;
+  }
   const application = await crud.create('application', { ...req.body, user_id: res.locals.userId }).catch((err) => {
     if (err.constraint === 'application_user_id_job_id_unique') {
       throw new BadRequestError('User applying for the same job more than once');

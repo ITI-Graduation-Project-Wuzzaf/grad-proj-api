@@ -31,7 +31,6 @@ if (process.env.NODE_ENV !== 'test') {
 app.use('/api-docs', swaggerUI.serve, swaggerUI.setup(swaggerDocument));
 app.post('/upload', fileUpload, (req, res) => {
   console.log(req.body);
-
   res.send('passed middleware');
 });
 

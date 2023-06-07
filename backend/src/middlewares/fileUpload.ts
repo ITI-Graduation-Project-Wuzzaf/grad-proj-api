@@ -1,3 +1,4 @@
+import { BadRequestError } from './../errors/BadRequestError';
 import { NextFunction, Request, Response } from 'express';
 import formidable, { File } from 'formidable';
 import fs from 'fs';
@@ -21,6 +22,10 @@ const fileTypes = [
 
 export const fileUpload = (req: Request, res: Response, next: NextFunction) => {
   const form = formidable({ allowEmptyFiles: false, maxFileSize: 5 * 1024 * 1024, maxFiles: 2 }); //5mb max
+  if (req.headers['content-type']?.split(';')[0] !== 'multipart/form-data') {
+    throw new BadRequestError('Only multipart/form-data is allowed');
+  }
+
   form.parse(req, async (err, fields, files) => {
     if (err) {
       return res.status(413).send([{ message: 'File size exceeds limit' }]);
