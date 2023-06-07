@@ -52,8 +52,8 @@ export async function up(knex: Knex): Promise<void> {
       t.string('experience', 100);
       t.enu('category', ['Development', 'Design', 'Marketing', 'Business', 'Support']).notNullable();
       t.specificType('skills', 'varchar(100)[]');
+      t.boolean('featured').defaultTo(false);
       t.integer('employer_id').unsigned().notNullable().references('id').inTable('employer');
-      // t.timestamp('created_at').defaultTo(knex.fn.now());
       t.timestamps(true, true);
     })
     .createTable('application', (t) => {
@@ -61,10 +61,17 @@ export async function up(knex: Knex): Promise<void> {
       t.integer('user_id').unsigned().notNullable().references('id').inTable('user_account');
       t.integer('job_id').unsigned().notNullable().references('id').inTable('job');
       t.enu('status', ['submitted', 'rejected']).defaultTo('submitted');
-      t.text('cv');
+      t.text('cv').notNullable();
       t.text('cover_letter');
       t.text('additional_info');
       t.timestamps();
+
+      t.unique(['user_id', 'job_id']);
+    })
+    .createTable('user_saved_job', (t) => {
+      t.increments('id').primary();
+      t.integer('user_id').unsigned().notNullable().references('id').inTable('user_account');
+      t.integer('job_id').unsigned().notNullable().references('id').inTable('job');
 
       t.unique(['user_id', 'job_id']);
     })
@@ -81,6 +88,7 @@ export async function up(knex: Knex): Promise<void> {
 export async function down(knex: Knex): Promise<void> {
   return knex.schema
     .dropTable('notification')
+    .dropTable('user_saved_job')
     .dropTable('application')
     .dropTable('profile')
     .dropTable('job')

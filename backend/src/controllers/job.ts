@@ -17,6 +17,12 @@ export const index = async (req: Request, res: Response) => {
   res.send({ pagination, jobs: instances });
 };
 
+export const employerJobs = async (req: Request, res: Response) => {
+  const page = Number(req.query.page) || 1;
+  const { pagination, jobs } = await crud.employerJobs(res.locals.userId, page, jobsPerPage);
+  res.send({ pagination, jobs });
+};
+
 export const create = async (req: Request, res: Response) => {
   const job = await crud.create('job', { ...req.body, employer_id: res.locals.userId });
   res.status(201).send(job);

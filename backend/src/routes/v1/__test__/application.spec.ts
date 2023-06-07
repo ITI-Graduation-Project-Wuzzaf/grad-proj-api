@@ -70,7 +70,8 @@ describe('Application routes', () => {
       const token = await global.signin('bassel@test.com');
       const res = await request(app)
         .post('/v1/applications')
-        .send({ job_id: 1, cv: 'Bonzo wonzo cv' })
+        .field('job_id', '1')
+        .field('cv', 'Bonzo wonzo cv')
         .set('Authorization', `Bearer ${token}`)
         .expect(201);
 
@@ -96,7 +97,8 @@ describe('Application routes', () => {
       const token = await global.signin('bassel@test.com');
       await request(app)
         .post('/v1/applications')
-        .send({ job_id: 4, cv: 'Bonzo wonzo cv' })
+        .field('job_id', '4')
+        .field('cv', 'Bonzo wonzo cv')
         .set('Authorization', `Bearer ${token}`)
         .expect(404);
     });
@@ -105,7 +107,7 @@ describe('Application routes', () => {
       const token = await global.signin('bassel@test.com');
       await request(app)
         .post('/v1/applications')
-        .send({ job_id: 1 })
+        .field('job_id', '4')
         .set('Authorization', `Bearer ${token}`)
         .expect(422);
     });
@@ -117,7 +119,7 @@ describe('Application routes', () => {
       const cv = 'Bonzo wonzo edited';
       const res = await request(app)
         .patch('/v1/applications/1')
-        .send({ cv })
+        .field('cv', cv)
         .set('Authorization', `Bearer ${token}`)
         .expect(200);
 
@@ -134,7 +136,7 @@ describe('Application routes', () => {
       const token = await global.signin('bassel@test.com');
       await request(app)
         .patch('/v1/applications/920')
-        .send({ cv: 'update' })
+        .field('cv', 'update')
         .set('Authorization', `Bearer ${token}`)
         .expect(404);
     });
@@ -143,7 +145,7 @@ describe('Application routes', () => {
       const token = await global.signin('bassel@test.com');
       await request(app)
         .patch('/v1/applications/2')
-        .send({ cv: 'update' })
+        .field('cv', 'update')
         .set('Authorization', `Bearer ${token}`)
         .expect(404);
     });
@@ -152,7 +154,7 @@ describe('Application routes', () => {
       const token = await global.signin('bassel@test.com');
       await request(app)
         .patch('/v1/applications/1')
-        .send({ job_id: 1 })
+        .field('job_id', 1)
         .set('Authorization', `Bearer ${token}`)
         .expect(422);
     });

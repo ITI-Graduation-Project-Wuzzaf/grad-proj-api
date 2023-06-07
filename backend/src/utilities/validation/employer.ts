@@ -20,6 +20,7 @@ export const employerUpdateSchema = joi
     description: joi.string().max(255).empty(''),
     website: joi.string().empty(''),
     industry: joi.string().max(100).empty(''),
+    logo: joi.string().max(255).empty(''),
     size: joi.number().integer().positive().empty(''),
   })
   .options({ stripUnknown: true })

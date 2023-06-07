@@ -1,8 +1,16 @@
+import { BadRequestError } from './../errors/BadRequestError';
 import { NextFunction, Request, Response } from 'express';
 import formidable, { File } from 'formidable';
 import fs from 'fs';
-import { Upload } from '@aws-sdk/lib-storage';
-import { AbortMultipartUploadCommandOutput, CompleteMultipartUploadCommandOutput, S3Client } from '@aws-sdk/client-s3';
+import ImageKit from 'imagekit';
+
+const { KIT_PUBLIC, KIT_PRIVATE, KIT_URL } = process.env;
+
+const imagekit = new ImageKit({
+  publicKey: KIT_PUBLIC + '',
+  privateKey: KIT_PRIVATE + '',
+  urlEndpoint: KIT_URL + '',
+});
 
 const fileTypes = [
   'image/png',
@@ -12,20 +20,11 @@ const fileTypes = [
   'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
 ];
 
-type UploadPromise = void | CompleteMultipartUploadCommandOutput | AbortMultipartUploadCommandOutput;
-
-const { S3_KEY, S3_SECRET, S3_REGION, S3_BUCKET, CF_DOMAIN } = process.env;
-
-const s3 = new S3Client({
-  region: S3_REGION,
-  credentials: {
-    accessKeyId: S3_KEY + '',
-    secretAccessKey: S3_SECRET + '',
-  },
-});
-
 export const fileUpload = (req: Request, res: Response, next: NextFunction) => {
   const form = formidable({ allowEmptyFiles: false, maxFileSize: 5 * 1024 * 1024, maxFiles: 2 }); //5mb max
+  if (req.headers['content-type']?.split(';')[0] !== 'multipart/form-data') {
+    throw new BadRequestError('Only multipart/form-data is allowed');
+  }
 
   form.parse(req, async (err, fields, files) => {
     if (err) {
@@ -33,7 +32,7 @@ export const fileUpload = (req: Request, res: Response, next: NextFunction) => {
     }
 
     req.body = fields;
-    const uploadPromises: Promise<UploadPromise>[] = [];
+    // const uploadPromises: Promise<void>[] = [];
     Object.entries(files).forEach(([fieldName, f]) => {
       const file = f as File;
 
@@ -41,28 +40,23 @@ export const fileUpload = (req: Request, res: Response, next: NextFunction) => {
         return res.status(422).send([{ message: 'File type is not supported' }]);
       }
       const fileStream = fs.createReadStream(file.filepath);
-      const upload = new Upload({
-        client: s3,
-        params: {
-          ACL: 'public-read',
-          Bucket: S3_BUCKET,
-          Key: `${Date.now().toString()}-${file.originalFilename}`,
-          Body: fileStream,
-          ContentType: file.mimetype + '',
-        },
-        tags: [],
-        queueSize: 4,
-        partSize: 1024 * 1024 * 5,
-        leavePartsOnError: false,
+      const fileName = `${Date.now().toString()}-${file.originalFilename}`;
+      imagekit.upload({
+        file: fileStream,
+        fileName,
+        useUniqueFileName: false,
       });
 
-      uploadPromises.push(
-        upload.done().then((data: CompleteMultipartUploadCommandOutput | void) => {
-          req.body[fieldName] = `${CF_DOMAIN}/${data?.Key}`;
-        }),
-      );
+      req.body[fieldName] = fileName.replace(/\s+/g, '_');
+      // uploadPromises.push(
+      //   imagekit.upload({
+      //     file: fileStream,
+      //     fileName: `${Date.now().toString()}-${file.originalFilename}`,
+      //     useUniqueFileName: false,
+      //   }),
+      // );
     });
-    await Promise.all(uploadPromises);
+    // await Promise.all(uploadPromises);
     next();
   });
 };
