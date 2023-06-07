@@ -19,10 +19,8 @@ export const index = async (req: Request, res: Response) => {
 
 export const employerJobs = async (req: Request, res: Response) => {
   const page = Number(req.query.page) || 1;
-  const where = { employer_id: res.locals.userId };
-  const { pagination, instances } = await crud.pagination('job', page, jobsPerPage, where);
-
-  res.send({ pagination, jobs: instances });
+  const { pagination, jobs } = await crud.employerJobs(res.locals.userId, page, jobsPerPage);
+  res.send({ pagination, jobs });
 };
 
 export const create = async (req: Request, res: Response) => {

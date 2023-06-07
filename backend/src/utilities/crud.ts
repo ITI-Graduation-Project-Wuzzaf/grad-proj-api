@@ -94,3 +94,24 @@ export const searchAccounts = async (email: string) => {
   const existingEmp = await knex.select('*').from('employer').where('email', 'ILIKE', email);
   return existingEmp[0];
 };
+
+//
+export const employerJobs = async (employerId: number, page: number, perPage: number) => {
+  const where = { employer_id: employerId };
+  const skip = (page - 1) * perPage;
+  const total = +(await knex('job').where(where).count('id'))[0].count;
+
+  const jobs = await knex('job')
+    .select('job.*')
+    .count('application.id as applications_number')
+    .leftJoin('application', 'job.id', '=', 'application.job_id')
+    .where(where)
+    .groupBy('job.id')
+    .limit(perPage)
+    .offset(skip);
+
+  const numberOfPages = Math.ceil(total / perPage);
+  const next = page * perPage < total ? true : false;
+  const prev = page > 1 ? true : false;
+  return { pagination: { page, next, prev, numberOfPages, total }, jobs };
+};
