@@ -69,6 +69,11 @@ export async function up(knex: Knex): Promise<void> {
 
       t.unique(['user_id', 'job_id']);
     })
+    .createTable('user_saved_job', (t) => {
+      t.increments('id').primary();
+      t.integer('user_id').unsigned().notNullable().references('id').inTable('user_account');
+      t.integer('job_id').unsigned().notNullable().references('id').inTable('job');
+    })
     .createTable('notification', (t) => {
       t.increments('id').primary();
       t.text('content').notNullable();

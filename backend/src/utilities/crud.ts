@@ -7,7 +7,7 @@ import { IUser } from '../@types/user';
 import { IEmployer } from '../@types/employer';
 import { isPwned } from './preventPwned';
 
-type Table = 'user_account' | 'profile' | 'employer' | 'job' | 'application';
+type Table = 'user_account' | 'profile' | 'employer' | 'job' | 'application' | 'user_saved_job';
 
 const { SR, PEPPER } = process.env;
 
@@ -95,7 +95,8 @@ export const searchAccounts = async (email: string) => {
   return existingEmp[0];
 };
 
-//
+// for single specific entity
+
 export const employerJobs = async (employerId: number, page: number, perPage: number) => {
   const where = { employer_id: employerId };
   const skip = (page - 1) * perPage;
@@ -107,6 +108,26 @@ export const employerJobs = async (employerId: number, page: number, perPage: nu
     .leftJoin('application', 'job.id', '=', 'application.job_id')
     .where(where)
     .groupBy('job.id')
+    .limit(perPage)
+    .offset(skip);
+
+  const numberOfPages = Math.ceil(total / perPage);
+  const next = page * perPage < total ? true : false;
+  const prev = page > 1 ? true : false;
+  return { pagination: { page, next, prev, numberOfPages, total }, jobs };
+};
+
+export const userSavedJobs = async (userId: number, page: number, perPage: number) => {
+  const where = { user_id: userId };
+  const skip = (page - 1) * perPage;
+  const total = +(
+    await knex('job').join('user_saved_job', 'job.id', '=', 'user_saved_job.job_id').where(where).count('id')
+  )[0].count;
+
+  const jobs = await knex('job')
+    .select('job.*')
+    .join('user_saved_job', 'job.id', '=', 'user_saved_job.job_id')
+    .where(where)
     .limit(perPage)
     .offset(skip);
 
