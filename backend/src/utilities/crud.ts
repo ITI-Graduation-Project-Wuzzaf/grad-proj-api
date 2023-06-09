@@ -215,7 +215,11 @@ export const search = async (page: number, perPage: number, query?: string, cate
 
   const total = +(await q2.count('title'))[0].count;
 
-  const jobs = await q.select('job.*', 'employer.name', 'employer.logo').limit(perPage).offset(skip);
+  const jobs = await q
+    .select('job.*', 'employer.name', 'employer.logo')
+    .limit(perPage)
+    .offset(skip)
+    .orderBy('featured', 'desc');
 
   const numberOfPages = Math.ceil(total / perPage);
   const next = page * perPage < total ? true : false;
