@@ -30,8 +30,8 @@ export const userApplications = async (req: Request, res: Response) => {
   const page = Number(req.query.page) || 1;
 
   const where = { user_id: res.locals.userId };
-  const { pagination, instances } = await crud.pagination('application', page, appPerPage, where);
-  res.send({ pagination, applications: instances });
+  const { pagination, applications } = await crud.jobApplications(page, appPerPage, where);
+  res.send({ pagination, applications });
 };
 
 export const show = async (req: Request, res: Response) => {

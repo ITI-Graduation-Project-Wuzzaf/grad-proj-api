@@ -146,6 +146,25 @@ export const removeSavedJob = async (userId: number, jobId: number) => {
   }
 };
 
+export const jobApplications = async (page: number, perPage: number, where: object) => {
+  const q1 = knex('application').where(where);
+  const q2 = q1.clone();
+
+  const total = +(await q1.count('id'))[0].count;
+  const skip = (page - 1) * perPage;
+  const numberOfPages = Math.ceil(total / perPage);
+  const next = page * perPage < total ? true : false;
+  const prev = page > 1 ? true : false;
+
+  const applications = await q2
+    .join('user_account', 'application.user_id', 'user_account.id')
+    .select('application.*', 'first_name', 'last_name', 'email')
+    .limit(perPage)
+    .offset(skip);
+
+  return { pagination: { page, next, prev, numberOfPages, total }, applications };
+};
+
 // FTS
 
 export const search = async (page: number, perPage: number, query?: string, category?: string) => {
