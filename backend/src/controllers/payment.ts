@@ -7,6 +7,10 @@ export const checkout = async (req: Request, res: Response) => {
   const session = await stripe.checkout.sessions.create({
     payment_method_types: ['card', 'paypal'],
     mode: 'payment',
+    metadata: {
+      jobId: 123,
+      aFieldToUseWhenTheUserPay: 'yea yea its me here huh',
+    },
 
     line_items: [
       {
@@ -14,7 +18,7 @@ export const checkout = async (req: Request, res: Response) => {
         quantity: 1,
       },
     ],
-    success_url: 'http://localhost:5000/',
+    success_url: 'http://localhost:5173/',
     cancel_url: 'http://localhost:5000/dsadwqewqe',
   });
 
@@ -38,6 +42,8 @@ export const stripeWebhook = async (req: Request, res: Response) => {
 
   switch (stripeEvent.type) {
     case 'checkout.session.completed':
+      console.log(stripeEvent.data.object);
+
       console.log('Remember to send a confirmation email and make the job become featured');
 
       break;

@@ -9,7 +9,7 @@ import { NotFoundError } from '../errors/notFoundError';
 import { BadRequestError } from '../errors/BadRequestError';
 import { IProfile } from '../@types/profile';
 
-const appPerPage = 6;
+const appPerPage = 9;
 
 export const jobApplications = async (req: Request, res: Response) => {
   const page = Number(req.query.page) || 1;
