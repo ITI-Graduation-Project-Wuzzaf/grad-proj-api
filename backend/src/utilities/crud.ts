@@ -110,6 +110,7 @@ export const employerJobs = async (employerId: number, page: number, perPage: nu
     .groupBy('job.id')
     .limit(perPage)
     .offset(skip);
+  console.log(jobs);
 
   const numberOfPages = Math.ceil(total / perPage);
   const next = page * perPage < total ? true : false;

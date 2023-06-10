@@ -18,6 +18,8 @@ export const jobApplications = async (req: Request, res: Response) => {
   const job = (await crud.show('job', jobId)) as IJob;
   if (job.employer_id !== res.locals.userId) {
     throw new NotAuthorizeError();
+  } else if (!job) {
+    throw new NotFoundError();
   }
 
   const where = { job_id: jobId };
