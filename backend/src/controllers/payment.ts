@@ -1,15 +1,26 @@
+import Stripe from 'stripe';
 import { BadRequestError } from '../errors/BadRequestError';
+import { update } from '../utilities/crud';
 import { stripe } from '../utilities/stripe';
 
 import { Request, Response } from 'express';
+import mail from '../utilities/mailing';
+
+interface IStripeEvent extends Stripe.Event {
+  data: {
+    object: {
+      metadata?: { jobId: number };
+      customer_details?: { email: string };
+    };
+  };
+}
 
 export const checkout = async (req: Request, res: Response) => {
   const session = await stripe.checkout.sessions.create({
     payment_method_types: ['card', 'paypal'],
     mode: 'payment',
     metadata: {
-      jobId: 123,
-      aFieldToUseWhenTheUserPay: 'yea yea its me here huh',
+      jobId: req.body.jobId,
     },
 
     line_items: [
@@ -19,7 +30,7 @@ export const checkout = async (req: Request, res: Response) => {
       },
     ],
     success_url: 'http://localhost:5173/',
-    cancel_url: 'http://localhost:5000/dsadwqewqe',
+    cancel_url: 'http://localhost:5173/?payment=failed',
   });
 
   res.send({ sessionId: session.id });
@@ -33,7 +44,7 @@ export const stripeWebhook = async (req: Request, res: Response) => {
     throw new BadRequestError('Cannot proceed without signature');
   }
 
-  let stripeEvent;
+  let stripeEvent: IStripeEvent;
   try {
     stripeEvent = stripe.webhooks.constructEvent(req.body, sig, endPointSecret);
   } catch (err) {
@@ -42,9 +53,11 @@ export const stripeWebhook = async (req: Request, res: Response) => {
 
   switch (stripeEvent.type) {
     case 'checkout.session.completed':
-      console.log(stripeEvent.data.object);
+      if (stripeEvent.data.object.metadata && stripeEvent.data.object.customer_details) {
+        await update('job', stripeEvent.data.object.metadata.jobId, { featured: true });
 
-      console.log('Remember to send a confirmation email and make the job become featured');
+        mail(stripeEvent.data.object.customer_details.email, 'Featured Job Payment Confirmation');
+      }
 
       break;
     default:

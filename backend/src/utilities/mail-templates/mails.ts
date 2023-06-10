@@ -14,7 +14,7 @@
 //     </html>`;
 // };
 
-export const confirmTemplate = (sender: string, name: string, msg: string) => {
+export const contactTemplate = (sender?: string, name?: string, msg?: string) => {
   return `<!doctype html>
     <html ⚡4email>
       <head>
@@ -25,6 +25,20 @@ export const confirmTemplate = (sender: string, name: string, msg: string) => {
         <h2>This is what ${name} left for you.</h2>
         <p>${msg}</p>
         <p>Note: if you got this by mistake, please ignore it</p>
+      </body>
+    </html>`;
+};
+
+export const paymentTemplate = () => {
+  return `<!doctype html>
+    <html ⚡4email>
+      <head>
+        <meta charset="utf-8">
+      </head>
+      <body>
+        <p>We Have confirmed your payment</p>
+        <h2>Thank you for choosing us</h2>
+        <p>We hope you enjoy our premium features, and help you finding your dream candidate.</p>
       </body>
     </html>`;
 };
