@@ -51,3 +51,13 @@ export const login = async (req: Request, res: Response) => {
 };
 
 // export const logout = (req: Request, res: Response) => {};
+
+export const isAuthed = async (req: Request, res: Response) => {
+  const email = res.locals.email;
+  const user = await crud.searchAccounts(email);
+  const accessToken = jwt.sign({ id: user.id, email: user.email, role: user.role }, JWT_SECRET + '', {
+    expiresIn: JWT_ACCESS_EXPIRY + '',
+  });
+
+  res.status(200).send({ user, accessToken });
+};
