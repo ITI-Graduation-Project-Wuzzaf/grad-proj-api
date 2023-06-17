@@ -6,7 +6,7 @@ import * as crud from '../utilities/crud';
 export const contactUs = async (req: Request, res: Response) => {
   const { name, email, message } = req.body;
 
-  mail('baselsalah2053@gmail.com', email, 'Jobify is happy to have you', name, message);
+  mail('baselsalah2053@gmail.com', 'Jobify is happy to have you', email, name, message);
   res.send({});
 };
 

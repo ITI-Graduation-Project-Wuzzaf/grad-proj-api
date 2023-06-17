@@ -9,7 +9,7 @@ import { NotFoundError } from '../errors/notFoundError';
 import { BadRequestError } from '../errors/BadRequestError';
 import { IProfile } from '../@types/profile';
 
-const appPerPage = 6;
+const appPerPage = 9;
 
 export const jobApplications = async (req: Request, res: Response) => {
   const page = Number(req.query.page) || 1;
@@ -18,20 +18,22 @@ export const jobApplications = async (req: Request, res: Response) => {
   const job = (await crud.show('job', jobId)) as IJob;
   if (job.employer_id !== res.locals.userId) {
     throw new NotAuthorizeError();
+  } else if (!job) {
+    throw new NotFoundError();
   }
 
   const where = { job_id: jobId };
-  const { pagination, instances } = await crud.pagination('application', page, appPerPage, where);
-
-  res.send({ pagination, applications: instances });
+  const { pagination, applications } = await crud.jobApplications(page, appPerPage, where);
+  res.send({ pagination, applications });
 };
 
 export const userApplications = async (req: Request, res: Response) => {
   const page = Number(req.query.page) || 1;
 
   const where = { user_id: res.locals.userId };
-  const { pagination, instances } = await crud.pagination('application', page, appPerPage, where);
-  res.send({ pagination, applications: instances });
+  const { pagination, applications } = await crud.userApplications(page, appPerPage, where);
+
+  res.send({ pagination, applications });
 };
 
 export const show = async (req: Request, res: Response) => {
@@ -73,4 +75,12 @@ export const update = async (req: Request, res: Response) => {
   const id = +req.params.id;
   const application = await crud.update('application', id, req.body, 'user_id', res.locals.userId);
   res.send(application);
+};
+
+export const respond = async (req: Request, res: Response) => {
+  const id = +req.params.id;
+
+  await crud.respond(req.body, id, res.locals.userId);
+
+  res.sendStatus(204);
 };

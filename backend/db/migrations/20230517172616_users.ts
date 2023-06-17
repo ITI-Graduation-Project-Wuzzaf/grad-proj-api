@@ -60,11 +60,12 @@ export async function up(knex: Knex): Promise<void> {
       t.increments('id').primary().unique();
       t.integer('user_id').unsigned().notNullable().references('id').inTable('user_account');
       t.integer('job_id').unsigned().notNullable().references('id').inTable('job');
-      t.enu('status', ['submitted', 'rejected']).defaultTo('submitted');
+      t.enu('status', ['submitted', 'rejected', 'in-consideration']).defaultTo('submitted');
       t.text('cv').notNullable();
       t.text('cover_letter');
       t.text('additional_info');
-      t.timestamps();
+      t.text('feedback');
+      t.timestamps(true, true);
 
       t.unique(['user_id', 'job_id']);
     })

@@ -84,8 +84,8 @@ export const search = async (req: Request, res: Response) => {
   const query = req.query.q as string | undefined;
   const category = req.query.cate as string | undefined;
   const page = Number(req.query.page) || 1;
-  const perPage = Number(req.query.size) || 6;
+  const perPage = Number(req.query.size) || 4;
 
-  const { pagination, jobs } = await crud.search(page, perPage, query, category);
+  const { pagination, jobs } = await crud.search(page, perPage, res.locals.userId, query, category);
   res.send({ pagination, jobs });
 };

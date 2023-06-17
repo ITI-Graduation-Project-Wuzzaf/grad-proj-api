@@ -110,6 +110,7 @@ export const employerJobs = async (employerId: number, page: number, perPage: nu
     .groupBy('job.id')
     .limit(perPage)
     .offset(skip);
+  console.log(jobs);
 
   const numberOfPages = Math.ceil(total / perPage);
   const next = page * perPage < total ? true : false;
@@ -146,9 +147,60 @@ export const removeSavedJob = async (userId: number, jobId: number) => {
   }
 };
 
+export const jobApplications = async (page: number, perPage: number, where: object) => {
+  const q1 = knex('application').where(where);
+  const q2 = q1.clone();
+
+  const total = +(await q1.count('id'))[0].count;
+  const skip = (page - 1) * perPage;
+  const numberOfPages = Math.ceil(total / perPage);
+  const next = page * perPage < total ? true : false;
+  const prev = page > 1 ? true : false;
+
+  const applications = await q2
+    .join('user_account', 'application.user_id', 'user_account.id')
+    .select('application.*', 'first_name', 'last_name', 'email')
+    .limit(perPage)
+    .offset(skip);
+
+  return { pagination: { page, next, prev, numberOfPages, total }, applications };
+};
+
+export const userApplications = async (page: number, perPage: number, where: object) => {
+  const q1 = knex('application').where(where);
+  const q2 = q1.clone();
+
+  const total = +(await q1.count('id'))[0].count;
+  const skip = (page - 1) * perPage;
+  const numberOfPages = Math.ceil(total / perPage);
+  const next = page * perPage < total ? true : false;
+  const prev = page > 1 ? true : false;
+
+  const applications = await q2
+    .join('job', 'application.job_id', 'job.id')
+    .select('application.*', 'title', 'description')
+    .limit(perPage)
+    .offset(skip);
+
+  return { pagination: { page, next, prev, numberOfPages, total }, applications };
+};
+
+export const respond = async (body: object, id: number, employer_id: number) => {
+  const result = await knex('application')
+    .update(body)
+    .whereIn('job_id', function () {
+      this.select('id').from('job').where({ employer_id });
+    })
+    .where({ id });
+
+  if (!result) {
+    throw new NotFoundError();
+  }
+};
+
 // FTS
 
-export const search = async (page: number, perPage: number, query?: string, category?: string) => {
+export const search = async (page: number, perPage: number, userId?: string, query?: string, category?: string) => {
   const skip = (page - 1) * perPage;
 
   const q = knex('job').join('employer', 'job.employer_id', '=', 'employer.id');
@@ -164,8 +216,20 @@ export const search = async (page: number, perPage: number, query?: string, cate
 
   const total = +(await q2.count('title'))[0].count;
 
-  const jobs = await q.select('job.*', 'employer.name', 'employer.logo').limit(perPage).offset(skip);
+  if (userId) {
+    q.select(knex.raw('CASE WHEN usj.user_id IS NOT NULL THEN true ELSE FALSE END AS is_saved')).leftJoin(
+      'user_saved_job as usj',
+      function () {
+        this.on('job.id', '=', 'usj.job_id').andOnVal('usj.user_id', '=', userId);
+      },
+    );
+  }
 
+  const jobs = await q
+    .select('job.*', 'employer.name', 'employer.logo')
+    .limit(perPage)
+    .offset(skip)
+    .orderBy('featured', 'desc');
   const numberOfPages = Math.ceil(total / perPage);
   const next = page * perPage < total ? true : false;
   const prev = page > 1 ? true : false;

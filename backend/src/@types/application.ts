@@ -2,7 +2,7 @@ export interface IApplication {
   id: number;
   user_id: number;
   job_id: number;
-  status: 'submitted' | 'rejected';
+  status: 'submitted' | 'rejected' | 'in-consideration';
   cv: string;
   cover_letter: string;
   additional_info: string;
