@@ -200,7 +200,7 @@ export const respond = async (body: object, id: number, employer_id: number) => 
 
 // FTS
 
-export const search = async (page: number, perPage: number, query?: string, category?: string) => {
+export const search = async (page: number, perPage: number, userId?: string, query?: string, category?: string) => {
   const skip = (page - 1) * perPage;
 
   const q = knex('job').join('employer', 'job.employer_id', '=', 'employer.id');
@@ -216,12 +216,20 @@ export const search = async (page: number, perPage: number, query?: string, cate
 
   const total = +(await q2.count('title'))[0].count;
 
+  if (userId) {
+    q.select(knex.raw('CASE WHEN usj.user_id IS NOT NULL THEN true ELSE FALSE END AS is_saved')).leftJoin(
+      'user_saved_job as usj',
+      function () {
+        this.on('job.id', '=', 'usj.job_id').andOnVal('usj.user_id', '=', userId);
+      },
+    );
+  }
+
   const jobs = await q
     .select('job.*', 'employer.name', 'employer.logo')
     .limit(perPage)
     .offset(skip)
     .orderBy('featured', 'desc');
-
   const numberOfPages = Math.ceil(total / perPage);
   const next = page * perPage < total ? true : false;
   const prev = page > 1 ? true : false;
