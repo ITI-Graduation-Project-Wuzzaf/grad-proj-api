@@ -10,6 +10,7 @@ import { searchRouter } from './search';
 import { paymentRouter } from './payment';
 
 import { requireAuth } from '../../middlewares/requireAuth';
+import { currentUser } from '../../middlewares/currentUser';
 
 const router = Router();
 
@@ -19,7 +20,7 @@ router.use(employerRouter);
 router.use(jobRouter);
 router.use(searchRouter);
 router.use(userRouter);
-router.use(requireAuth, applicationRouter);
+router.use(currentUser, requireAuth, applicationRouter);
 router.use(paymentRouter);
 
 export default router;

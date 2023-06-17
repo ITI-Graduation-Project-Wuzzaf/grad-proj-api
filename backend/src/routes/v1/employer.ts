@@ -1,3 +1,4 @@
+import { currentUser } from './../../middlewares/currentUser';
 import { Router } from 'express';
 
 import { signup, show, update } from '../../controllers/employer';
@@ -9,12 +10,13 @@ import { fileUpload } from '../../middlewares/fileUpload';
 
 const router = Router();
 
-router.get('/employers/:id', requireAuth, show);
+router.get('/employers/:id', currentUser, requireAuth, show);
 
 router.post('/employers', validateRequest(employerSignupSchema), signup);
 
 router.patch(
   '/employers',
+  currentUser,
   requireAuth,
   checkRole('employer'),
   fileUpload,
