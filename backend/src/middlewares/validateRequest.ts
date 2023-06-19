@@ -4,6 +4,7 @@ import { RequestValidationError } from '../errors/requestValidationError';
 
 export const validateRequest = (schema: ObjectSchema) => async (req: Request, _res: Response, next: NextFunction) => {
   try {
+    console.log(req.body);
     const value = await schema.validateAsync(req.body, { abortEarly: false });
 
     req.body = value;

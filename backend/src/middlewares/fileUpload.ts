@@ -33,8 +33,8 @@ export const fileUpload = (req: Request, res: Response, next: NextFunction) => {
     }
 
     req.body = fields;
-    req.body.skills = jsonParser(req.body.skills);
-    req.body.links = jsonParser(req.body.links);
+    if (fields.skills) req.body.skills = jsonParser(req.body.skills);
+    if (fields.links) req.body.links = jsonParser(req.body.links);
 
     // const uploadPromises: Promise<void>[] = [];
     Object.entries(files).forEach(([fieldName, f]) => {
