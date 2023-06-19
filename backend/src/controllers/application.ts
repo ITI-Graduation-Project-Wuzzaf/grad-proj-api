@@ -61,6 +61,7 @@ export const create = async (req: Request, res: Response) => {
     if (!userProfile.cv) throw new BadRequestError("User Doesn't have a cv already ");
     req.body.cv = userProfile.cv;
   }
+
   const application = await crud.create('application', { ...req.body, user_id: res.locals.userId }).catch((err) => {
     if (err.constraint === 'application_user_id_job_id_unique') {
       throw new BadRequestError('User applying for the same job more than once');

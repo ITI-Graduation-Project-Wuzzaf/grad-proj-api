@@ -80,4 +80,5 @@ export const socketIO = (server: httpServer) => {
       io.to(room).emit('notification', notification);
     });
   });
+  return io;
 };
