@@ -3,6 +3,7 @@ import { NextFunction, Request, Response } from 'express';
 import formidable, { File } from 'formidable';
 import fs from 'fs';
 import ImageKit from 'imagekit';
+import { jsonParser } from '../utilities/jsonParser';
 
 const { KIT_PUBLIC, KIT_PRIVATE, KIT_URL } = process.env;
 
@@ -32,6 +33,9 @@ export const fileUpload = (req: Request, res: Response, next: NextFunction) => {
     }
 
     req.body = fields;
+    req.body.skills = jsonParser(req.body.skills);
+    req.body.links = jsonParser(req.body.links);
+
     // const uploadPromises: Promise<void>[] = [];
     Object.entries(files).forEach(([fieldName, f]) => {
       const file = f as File;
