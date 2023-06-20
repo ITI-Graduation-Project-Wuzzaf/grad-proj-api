@@ -3,24 +3,25 @@ import { Server as httpServer } from 'http';
 
 import * as notifications from './notifications';
 import { notifSchema, socketSchema } from './validation/socket';
+import { server } from '../index';
 
-export const socketIO = (server: httpServer) => {
+interface ISocketData {
+  id: number;
+  role: string;
+}
+
+interface INotif extends ISocketData {
+  jobId: number;
+  jobName: string;
+  appId: number;
+}
+
+const socketIO = (server: httpServer) => {
   const io = new Server(server, {
     cors: {
       origin: '*',
     },
   });
-
-  interface ISocketData {
-    id: number;
-    role: string;
-  }
-
-  interface INotif extends ISocketData {
-    jobId: number;
-    jobName: string;
-    appId: number;
-  }
 
   io.on('connection', (socket) => {
     socket.on('add-user', async ({ id, role }: ISocketData) => {
@@ -80,5 +81,10 @@ export const socketIO = (server: httpServer) => {
       io.to(room).emit('notification', notification);
     });
   });
+  if (process.env.NODE_ENV === 'test') {
+    io.close();
+  }
   return io;
 };
+
+export const io = socketIO(server);

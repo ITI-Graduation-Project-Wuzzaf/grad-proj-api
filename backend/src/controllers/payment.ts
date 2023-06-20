@@ -5,8 +5,9 @@ import { stripe } from '../utilities/stripe';
 
 import { Request, Response } from 'express';
 import mail from '../utilities/mailing';
-import { io } from '../index';
 import * as notifications from '../utilities/notifications';
+
+import { io } from '../utilities/socket';
 
 interface IStripeEvent extends Stripe.Event {
   data: {
@@ -61,9 +62,10 @@ export const stripeWebhook = async (req: Request, res: Response) => {
         await update('job', jobId, { featured: true });
         const userId = stripeEvent.data.object.metadata.userId;
         const url = `/jobDetails/${jobId}`;
-        const content = 'Featured Job Payment Confirmation.';
+        const content = 'Featured Job Payment Confirmation';
         const data = { content, url, recipient_id: userId, recipient_type: 'employer' };
         const notification = await notifications.create(data);
+
         io.to(`employer_${userId}`).emit('notification', notification);
         mail(stripeEvent.data.object.customer_details.email, 'Featured Job Payment Confirmation');
       }

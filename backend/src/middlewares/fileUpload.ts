@@ -31,7 +31,6 @@ export const fileUpload = (req: Request, res: Response, next: NextFunction) => {
     if (err) {
       return res.status(413).send([{ message: 'File size exceeds limit' }]);
     }
-    console.log(files);
 
     req.body = fields;
     if (fields.skills) req.body.skills = jsonParser(req.body.skills);
