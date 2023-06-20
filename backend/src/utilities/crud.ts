@@ -190,11 +190,28 @@ export const respond = async (body: object, id: number, employer_id: number) => 
     .whereIn('job_id', function () {
       this.select('id').from('job').where({ employer_id });
     })
-    .where({ id });
+    .where('application.id', id)
+    .returning('job_id');
 
-  if (!result) {
+  if (!result.length) {
     throw new NotFoundError();
   }
+
+  const jobName = await knex('job').select('title').where({ id: result[0].job_id });
+
+  return jobName[0];
+};
+
+export const jobDetails = async (id: number) => {
+  const instance = await knex('job')
+    .join('employer', 'job.employer_id', '=', 'employer.id')
+    .select('name', 'logo', 'job.*')
+    .where('job.id', id);
+
+  if (!instance) {
+    throw new NotFoundError();
+  }
+  return instance[0];
 };
 
 // FTS

@@ -30,7 +30,7 @@ export const create = async (req: Request, res: Response) => {
 
 export const show = async (req: Request, res: Response) => {
   const id = +req.params.id;
-  const job = await crud.show('job', id);
+  const job = await crud.jobDetails(id);
   res.send(job);
 };
 

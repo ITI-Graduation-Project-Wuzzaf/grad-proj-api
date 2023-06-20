@@ -81,7 +81,7 @@ export const update = async (req: Request, res: Response) => {
 export const respond = async (req: Request, res: Response) => {
   const id = +req.params.id;
 
-  await crud.respond(req.body, id, res.locals.userId);
+  const title = await crud.respond(req.body, id, res.locals.userId);
 
-  res.sendStatus(204);
+  res.send(title);
 };
