@@ -9,7 +9,7 @@ export const unRead = async (id: number, role: string) => {
 
 export const index = async (id: number, role: string) => {
   const where = { recipient_id: id, recipient_type: role };
-  const notifications = await knex('notification').where(where).limit(6);
+  const notifications = await knex('notification').where(where).limit(6).orderBy('id', 'desc');
 
   return notifications;
 };
