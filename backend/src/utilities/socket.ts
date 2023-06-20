@@ -3,7 +3,6 @@ import { Server as httpServer } from 'http';
 
 import * as notifications from './notifications';
 import { notifSchema, socketSchema } from './validation/socket';
-import { server } from '../index';
 
 interface ISocketData {
   id: number;
@@ -16,7 +15,7 @@ interface INotif extends ISocketData {
   appId: number;
 }
 
-const socketIO = (server: httpServer) => {
+export const socketIO = (server: httpServer) => {
   const io = new Server(server, {
     cors: {
       origin: '*',
@@ -29,7 +28,6 @@ const socketIO = (server: httpServer) => {
       if (error) return;
 
       const room = `${role}_${id}`;
-
       socket.join(room);
       // io.to(room) to even include the sender
 
@@ -86,5 +84,3 @@ const socketIO = (server: httpServer) => {
   }
   return io;
 };
-
-export const io = socketIO(server);

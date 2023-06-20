@@ -7,7 +7,7 @@ import { Request, Response } from 'express';
 import mail from '../utilities/mailing';
 import * as notifications from '../utilities/notifications';
 
-import { io } from '../utilities/socket';
+import { io } from '../index';
 
 interface IStripeEvent extends Stripe.Event {
   data: {
