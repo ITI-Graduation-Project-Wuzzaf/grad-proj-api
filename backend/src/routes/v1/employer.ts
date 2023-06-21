@@ -1,7 +1,7 @@
 import { currentUser } from './../../middlewares/currentUser';
 import { Router } from 'express';
 
-import { signup, show, update } from '../../controllers/employer';
+import { signup, show, update, employerDetails } from '../../controllers/employer';
 import { employerSignupSchema, employerUpdateSchema } from '../../utilities/validation/employer';
 import { requireAuth } from '../../middlewares/requireAuth';
 import { validateRequest } from '../../middlewares/validateRequest';
@@ -11,6 +11,8 @@ import { fileUpload } from '../../middlewares/fileUpload';
 const router = Router();
 
 router.get('/employers/:id', currentUser, requireAuth, show);
+
+router.get('/employer/:id/details', currentUser, requireAuth, employerDetails);
 
 router.post('/employers', validateRequest(employerSignupSchema), signup);
 

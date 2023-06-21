@@ -214,6 +214,32 @@ export const jobDetails = async (id: number) => {
   return instance[0];
 };
 
+export const employerDetails = async (id: number) => {
+  const employer = await knex('employer').select('*').where({ id }).first();
+  if (!employer) {
+    throw new NotFoundError();
+  }
+  const jobs = await knex('job').select('*').where({ employer_id: id });
+  return { employer, jobs };
+};
+
+export const appDetails = async (id: number, userId: number) => {
+  const application = await knex('application')
+    .join('user_account', 'application.user_id', '=', 'user_account.id')
+    .join('job', 'application.job_id', '=', 'job.id')
+    .where('application.id', id)
+    .andWhere(function () {
+      this.where('user_account.id', userId).orWhere('job.employer_id', userId);
+    })
+    .select('first_name', 'last_name', 'email', 'application.*', 'title');
+
+  if (!application[0]) {
+    throw new NotFoundError();
+  }
+
+  return application[0];
+};
+
 // FTS
 
 export const search = async (page: number, perPage: number, userId?: string, query?: string, category?: string) => {

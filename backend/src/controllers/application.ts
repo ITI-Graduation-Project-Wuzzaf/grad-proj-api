@@ -2,7 +2,6 @@ import { Request, Response } from 'express';
 
 import * as crud from '../utilities/crud';
 import { NotAuthorizeError } from '../errors/notAuthorizedError';
-import knex from '../../db/knex';
 
 import { IJob } from '../@types/job';
 import { NotFoundError } from '../errors/notFoundError';
@@ -39,20 +38,9 @@ export const userApplications = async (req: Request, res: Response) => {
 export const show = async (req: Request, res: Response) => {
   const id = +req.params.id;
 
-  const application = await knex('application')
-    .join('user_account', 'application.user_id', '=', 'user_account.id')
-    .join('job', 'application.job_id', '=', 'job.id')
-    .where('application.id', id)
-    .andWhere(function () {
-      this.where('user_account.id', res.locals.userId).orWhere('job.employer_id', res.locals.userId);
-    })
-    .select('application.*');
+  const application = await crud.appDetails(id, res.locals.userId);
 
-  if (!application[0]) {
-    throw new NotFoundError();
-  }
-
-  res.send(application[0]);
+  res.send(application);
 };
 
 export const create = async (req: Request, res: Response) => {
