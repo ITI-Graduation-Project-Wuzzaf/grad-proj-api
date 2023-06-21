@@ -59,7 +59,7 @@ export async function up(knex: Knex): Promise<void> {
     .createTable('application', (t) => {
       t.increments('id').primary().unique();
       t.integer('user_id').unsigned().notNullable().references('id').inTable('user_account');
-      t.integer('job_id').unsigned().notNullable().references('id').inTable('job');
+      t.integer('job_id').unsigned().notNullable().references('id').inTable('job').onDelete('CASCADE');
       t.enu('status', ['submitted', 'rejected', 'in-consideration']).defaultTo('submitted');
       t.text('cv').notNullable();
       t.text('cover_letter');
