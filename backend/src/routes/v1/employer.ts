@@ -12,7 +12,7 @@ const router = Router();
 
 router.get('/employers/:id', currentUser, requireAuth, show);
 
-router.get('/employer/:id/details', currentUser, requireAuth, employerDetails);
+router.get('/employers/:id/details', currentUser, requireAuth, employerDetails);
 
 router.post('/employers', validateRequest(employerSignupSchema), signup);
 
