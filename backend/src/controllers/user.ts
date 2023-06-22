@@ -2,6 +2,7 @@ import { Request, Response } from 'express';
 
 import mail from '../utilities/mailing';
 import * as crud from '../utilities/crud';
+import * as notifCrud from '../utilities/notifications';
 
 export const contactUs = async (req: Request, res: Response) => {
   const { name, email, message } = req.body;
@@ -31,4 +32,13 @@ export const userSavedJobs = async (req: Request, res: Response) => {
   const page = Number(req.query.page) || 1;
   const { pagination, jobs } = await crud.userSavedJobs(res.locals.userId, page, 8);
   res.send({ pagination, jobs });
+};
+
+export const getNotifications = async (req: Request, res: Response) => {
+  const userId = res.locals.userId;
+  const role = res.locals.role;
+  const page = Number(req.query.page) || 1;
+  const { notifications, pagination } = await notifCrud.pagination(userId, role, page);
+
+  res.send({ pagination, notifications });
 };

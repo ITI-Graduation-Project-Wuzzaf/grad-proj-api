@@ -26,3 +26,9 @@ export const signup = async (req: Request, res: Response) => {
 
   res.status(201).send({ employer: employer, accessToken });
 };
+
+export const employerDetails = async (req: Request, res: Response) => {
+  const id = +req.params.id;
+  const { employer, jobs } = await crud.employerDetails(id);
+  res.send({ employer, jobs });
+};

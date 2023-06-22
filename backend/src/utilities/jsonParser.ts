@@ -1,6 +1,10 @@
 export const jsonParser = (field: string | string[]): string[] | string => {
   if (field && typeof field === 'string') {
-    return JSON.parse(field);
+    try {
+      return JSON.parse(field);
+    } catch (err) {
+      return '';
+    }
   }
   return '';
 };

@@ -5,11 +5,14 @@ import { stripe } from '../utilities/stripe';
 
 import { Request, Response } from 'express';
 import mail from '../utilities/mailing';
+import * as notifications from '../utilities/notifications';
+
+import { io } from '../index';
 
 interface IStripeEvent extends Stripe.Event {
   data: {
     object: {
-      metadata?: { jobId: number };
+      metadata?: { jobId: number; userId: number };
       customer_details?: { email: string };
     };
   };
@@ -21,6 +24,7 @@ export const checkout = async (req: Request, res: Response) => {
     mode: 'payment',
     metadata: {
       jobId: req.body.jobId,
+      userId: res.locals.userId,
     },
 
     line_items: [
@@ -54,8 +58,15 @@ export const stripeWebhook = async (req: Request, res: Response) => {
   switch (stripeEvent.type) {
     case 'checkout.session.completed':
       if (stripeEvent.data.object.metadata && stripeEvent.data.object.customer_details) {
-        await update('job', stripeEvent.data.object.metadata.jobId, { featured: true });
+        const jobId = stripeEvent.data.object.metadata.jobId;
+        await update('job', jobId, { featured: true });
+        const userId = stripeEvent.data.object.metadata.userId;
+        const url = `/jobDetails/${jobId}`;
+        const content = 'Featured Job Payment Confirmation';
+        const data = { content, url, recipient_id: userId, recipient_type: 'employer' };
+        const notification = await notifications.create(data);
 
+        io.to(`employer_${userId}`).emit('notification', notification);
         mail(stripeEvent.data.object.customer_details.email, 'Featured Job Payment Confirmation');
       }
 

@@ -110,7 +110,6 @@ export const employerJobs = async (employerId: number, page: number, perPage: nu
     .groupBy('job.id')
     .limit(perPage)
     .offset(skip);
-  console.log(jobs);
 
   const numberOfPages = Math.ceil(total / perPage);
   const next = page * perPage < total ? true : false;
@@ -191,11 +190,54 @@ export const respond = async (body: object, id: number, employer_id: number) => 
     .whereIn('job_id', function () {
       this.select('id').from('job').where({ employer_id });
     })
-    .where({ id });
+    .where('application.id', id)
+    .returning('job_id');
 
-  if (!result) {
+  if (!result.length) {
     throw new NotFoundError();
   }
+
+  const jobName = await knex('job').select('title').where({ id: result[0].job_id });
+
+  return jobName[0];
+};
+
+export const jobDetails = async (id: number) => {
+  const instance = await knex('job')
+    .join('employer', 'job.employer_id', '=', 'employer.id')
+    .select('name', 'logo', 'job.*')
+    .where('job.id', id);
+
+  if (!instance) {
+    throw new NotFoundError();
+  }
+  return instance[0];
+};
+
+export const employerDetails = async (id: number) => {
+  const employer = await knex('employer').select('*').where({ id }).first();
+  if (!employer) {
+    throw new NotFoundError();
+  }
+  const jobs = await knex('job').select('*').where({ employer_id: id });
+  return { employer, jobs };
+};
+
+export const appDetails = async (id: number, userId: number) => {
+  const application = await knex('application')
+    .join('user_account', 'application.user_id', '=', 'user_account.id')
+    .join('job', 'application.job_id', '=', 'job.id')
+    .where('application.id', id)
+    .andWhere(function () {
+      this.where('user_account.id', userId).orWhere('job.employer_id', userId);
+    })
+    .select('first_name', 'last_name', 'email', 'application.*', 'title');
+
+  if (!application[0]) {
+    throw new NotFoundError();
+  }
+
+  return application[0];
 };
 
 // FTS
