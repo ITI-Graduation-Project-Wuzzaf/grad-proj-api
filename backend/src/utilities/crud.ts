@@ -219,6 +219,7 @@ export const employerDetails = async (id: number) => {
   if (!employer) {
     throw new NotFoundError();
   }
+
   const jobs = await knex('job').select('*').where({ employer_id: id });
   return { employer, jobs };
 };
