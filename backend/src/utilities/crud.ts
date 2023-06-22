@@ -251,6 +251,15 @@ export const appDetails = async (id: number, userId: number) => {
   return application[0];
 };
 
+export const profileData = async (id: number) => {
+  const profile = await knex('profile')
+    .join('user_account', 'profile.id', 'user_account.id')
+    .where('profile.id', id)
+    .select('profile.*', 'first_name', 'last_name', 'email');
+
+  return profile[0];
+};
+
 // FTS
 
 export const search = async (page: number, perPage: number, userId?: string, query?: string, category?: string) => {
