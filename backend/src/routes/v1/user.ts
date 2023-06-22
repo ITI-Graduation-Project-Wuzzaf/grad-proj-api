@@ -1,6 +1,6 @@
 import { Router } from 'express';
 
-import { contactUs, removeSavedJob, saveJob, userSavedJobs } from '../../controllers/user';
+import { contactUs, getNotifications, removeSavedJob, saveJob, userSavedJobs } from '../../controllers/user';
 
 import { contactSchema } from '../../utilities/validation/user';
 import { validateRequest } from '../../middlewares/validateRequest';
@@ -17,5 +17,7 @@ router.post('/save-job', currentUser, requireAuth, checkRole('user'), saveJob);
 router.delete('/remove-job', currentUser, requireAuth, checkRole('user'), removeSavedJob);
 
 router.get('/user/jobs', currentUser, requireAuth, checkRole('user'), userSavedJobs);
+
+router.get('/notifications', currentUser, requireAuth, getNotifications);
 
 export { router as userRouter };
