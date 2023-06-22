@@ -33,3 +33,9 @@ export const employerDetails = async (req: Request, res: Response) => {
   const { password, ...filteredEmployer } = employer;
   res.send({ employer: filteredEmployer, jobs });
 };
+
+export const featuredEmployers = async (req: Request, res: Response) => {
+  const employers = await crud.featuredEmployers();
+
+  res.send(employers);
+};

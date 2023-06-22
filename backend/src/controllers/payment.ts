@@ -6,6 +6,7 @@ import { stripe } from '../utilities/stripe';
 import { Request, Response } from 'express';
 import mail from '../utilities/mailing';
 import * as notifications from '../utilities/notifications';
+import * as crud from '../utilities/crud';
 
 import { io } from '../index';
 
@@ -65,7 +66,7 @@ export const stripeWebhook = async (req: Request, res: Response) => {
         const content = 'Featured Job Payment Confirmation';
         const data = { content, url, recipient_id: userId, recipient_type: 'employer' };
         const notification = await notifications.create(data);
-
+        await crud.update('employer', userId, { featured: true });
         io.to(`employer_${userId}`).emit('notification', notification);
         mail(stripeEvent.data.object.customer_details.email, 'Featured Job Payment Confirmation');
       }

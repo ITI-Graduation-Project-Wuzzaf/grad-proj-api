@@ -1,7 +1,7 @@
 import { currentUser } from './../../middlewares/currentUser';
 import { Router } from 'express';
 
-import { signup, show, update, employerDetails } from '../../controllers/employer';
+import { signup, show, update, employerDetails, featuredEmployers } from '../../controllers/employer';
 import { employerSignupSchema, employerUpdateSchema } from '../../utilities/validation/employer';
 import { requireAuth } from '../../middlewares/requireAuth';
 import { validateRequest } from '../../middlewares/validateRequest';
@@ -13,6 +13,8 @@ const router = Router();
 router.get('/employers/:id', currentUser, requireAuth, show);
 
 router.get('/employers/:id/details', currentUser, requireAuth, employerDetails);
+
+router.get('/featured/employers', featuredEmployers);
 
 router.post('/employers', validateRequest(employerSignupSchema), signup);
 

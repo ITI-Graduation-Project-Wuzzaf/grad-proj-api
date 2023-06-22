@@ -224,6 +224,16 @@ export const employerDetails = async (id: number) => {
   return { employer, jobs };
 };
 
+export const featuredEmployers = async () => {
+  const employers = await knex('employer')
+    .select('id', 'name', 'industry', 'logo')
+    .limit(4)
+    .where({ featured: true })
+    .orderBy('size', 'desc');
+
+  return employers;
+};
+
 export const appDetails = async (id: number, userId: number) => {
   const application = await knex('application')
     .join('user_account', 'application.user_id', '=', 'user_account.id')
