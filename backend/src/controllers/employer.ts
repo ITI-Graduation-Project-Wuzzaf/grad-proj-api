@@ -39,3 +39,12 @@ export const featuredEmployers = async (req: Request, res: Response) => {
 
   res.send(employers);
 };
+
+export const latestCandidates = async (req: Request, res: Response) => {
+  const id = res.locals.userId;
+  console.log('heya');
+
+  const candidates = await crud.latestCandidates(id);
+
+  res.send(candidates);
+};

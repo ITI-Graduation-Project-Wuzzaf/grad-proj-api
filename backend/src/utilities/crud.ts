@@ -234,6 +234,18 @@ export const featuredEmployers = async () => {
   return employers;
 };
 
+export const latestCandidates = async (id: number) => {
+  const employers = await knex('application AS a')
+    .join('job AS j', 'a.job_id', 'j.id')
+    .join('user_account AS u', 'a.user_id', 'u.id')
+    .select('u.id', 'first_name', 'last_name', 'title', 'a.created_at')
+    .limit(6)
+    .where({ employer_id: id })
+    .orderBy('a.created_at', 'DESC');
+
+  return employers;
+};
+
 export const appDetails = async (id: number, userId: number) => {
   const application = await knex('application')
     .join('user_account', 'application.user_id', '=', 'user_account.id')
@@ -297,4 +309,29 @@ export const search = async (page: number, perPage: number, userId?: string, que
   const prev = page > 1 ? true : false;
 
   return { pagination: { page, next, prev, numberOfPages, total }, jobs };
+};
+
+export const candidateSearch = async (page: number, perPage: number, query: string) => {
+  const q = knex('profile')
+    .join('user_account', 'profile.id', 'user_account.id')
+    .whereRaw(
+      "to_tsvector(first_name||' '||email||' '||coalesce(country,'')||' '||coalesce(university,'')||' '||coalesce(cast(skills as TEXT),''))  @@ to_tsquery(?)",
+      [`'${query}':*`],
+    );
+
+  const q2 = q.clone();
+
+  const total = +(await q2.count('email'))[0].count;
+  const skip = (page - 1) * perPage;
+
+  const candidates = await q
+    .select('profile.*', 'user_account.first_name', 'user_account.last_name')
+    .limit(perPage)
+    .offset(skip);
+
+  const numberOfPages = Math.ceil(total / perPage);
+  const next = page * perPage < total ? true : false;
+  const prev = page > 1 ? true : false;
+
+  return { pagination: { page, next, prev, numberOfPages, total }, candidates };
 };
