@@ -177,7 +177,8 @@ export const userApplications = async (page: number, perPage: number, where: obj
 
   const applications = await q2
     .join('job', 'application.job_id', 'job.id')
-    .select('application.*', 'title', 'description')
+    .join('employer', 'job.employer_id', 'employer.id')
+    .select('application.*', 'title', 'name')
     .limit(perPage)
     .offset(skip);
 
