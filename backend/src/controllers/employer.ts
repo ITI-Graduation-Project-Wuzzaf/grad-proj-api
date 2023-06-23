@@ -30,5 +30,21 @@ export const signup = async (req: Request, res: Response) => {
 export const employerDetails = async (req: Request, res: Response) => {
   const id = +req.params.id;
   const { employer, jobs } = await crud.employerDetails(id);
-  res.send({ employer, jobs });
+  const { password, ...filteredEmployer } = employer;
+  res.send({ employer: filteredEmployer, jobs });
+};
+
+export const featuredEmployers = async (req: Request, res: Response) => {
+  const employers = await crud.featuredEmployers();
+
+  res.send(employers);
+};
+
+export const latestCandidates = async (req: Request, res: Response) => {
+  const id = res.locals.userId;
+  console.log('heya');
+
+  const candidates = await crud.latestCandidates(id);
+
+  res.send(candidates);
 };

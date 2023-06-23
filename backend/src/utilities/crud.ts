@@ -177,7 +177,8 @@ export const userApplications = async (page: number, perPage: number, where: obj
 
   const applications = await q2
     .join('job', 'application.job_id', 'job.id')
-    .select('application.*', 'title', 'description')
+    .join('employer', 'job.employer_id', 'employer.id')
+    .select('application.*', 'title', 'name')
     .limit(perPage)
     .offset(skip);
 
@@ -219,8 +220,31 @@ export const employerDetails = async (id: number) => {
   if (!employer) {
     throw new NotFoundError();
   }
+
   const jobs = await knex('job').select('*').where({ employer_id: id });
   return { employer, jobs };
+};
+
+export const featuredEmployers = async () => {
+  const employers = await knex('employer')
+    .select('id', 'name', 'industry', 'logo')
+    .limit(4)
+    .where({ featured: true })
+    .orderBy('size', 'desc');
+
+  return employers;
+};
+
+export const latestCandidates = async (id: number) => {
+  const employers = await knex('application AS a')
+    .join('job AS j', 'a.job_id', 'j.id')
+    .join('user_account AS u', 'a.user_id', 'u.id')
+    .select('u.id', 'first_name', 'last_name', 'title', 'a.created_at')
+    .limit(6)
+    .where({ employer_id: id })
+    .orderBy('a.created_at', 'DESC');
+
+  return employers;
 };
 
 export const appDetails = async (id: number, userId: number) => {
@@ -238,6 +262,15 @@ export const appDetails = async (id: number, userId: number) => {
   }
 
   return application[0];
+};
+
+export const profileData = async (id: number) => {
+  const profile = await knex('profile')
+    .join('user_account', 'profile.id', 'user_account.id')
+    .where('profile.id', id)
+    .select('profile.*', 'first_name', 'last_name', 'email');
+
+  return profile[0];
 };
 
 // FTS
@@ -277,4 +310,29 @@ export const search = async (page: number, perPage: number, userId?: string, que
   const prev = page > 1 ? true : false;
 
   return { pagination: { page, next, prev, numberOfPages, total }, jobs };
+};
+
+export const candidateSearch = async (page: number, perPage: number, query: string) => {
+  const q = knex('profile')
+    .join('user_account', 'profile.id', 'user_account.id')
+    .whereRaw(
+      "to_tsvector(first_name||' '||email||' '||coalesce(country,'')||' '||coalesce(university,'')||' '||coalesce(cast(skills as TEXT),''))  @@ to_tsquery(?)",
+      [`'${query}':*`],
+    );
+
+  const q2 = q.clone();
+
+  const total = +(await q2.count('email'))[0].count;
+  const skip = (page - 1) * perPage;
+
+  const candidates = await q
+    .select('profile.*', 'user_account.first_name', 'user_account.last_name')
+    .limit(perPage)
+    .offset(skip);
+
+  const numberOfPages = Math.ceil(total / perPage);
+  const next = page * perPage < total ? true : false;
+  const prev = page > 1 ? true : false;
+
+  return { pagination: { page, next, prev, numberOfPages, total }, candidates };
 };

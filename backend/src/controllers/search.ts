@@ -3,6 +3,7 @@ import { Request, Response } from 'express';
 import * as crud from '../utilities/crud';
 import { searchSchema } from '../utilities/validation/search';
 import { RequestValidationError } from '../errors/requestValidationError';
+import { BadRequestError } from '../errors/BadRequestError';
 // import { client } from '../utilities/elasticSearch';
 
 // interface ISearchQuery {
@@ -88,4 +89,21 @@ export const search = async (req: Request, res: Response) => {
 
   const { pagination, jobs } = await crud.search(page, perPage, res.locals.userId, query, category);
   res.send({ pagination, jobs });
+};
+
+export const candidateSearch = async (req: Request, res: Response) => {
+  const { error } = searchSchema.validate(req.query);
+  if (error) {
+    throw new RequestValidationError(error);
+  }
+  if (!req.query.q) {
+    throw new BadRequestError('Must pass params (q)');
+  }
+  const query = req.query.q as string;
+  const page = Number(req.query.page) || 1;
+  const perPage = Number(req.query.size) || 6;
+
+  const { pagination, candidates } = await crud.candidateSearch(page, perPage, query);
+
+  res.send({ pagination, candidates });
 };

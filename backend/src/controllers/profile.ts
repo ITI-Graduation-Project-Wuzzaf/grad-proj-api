@@ -4,7 +4,7 @@ import * as crud from '../utilities/crud';
 
 export const show = async (req: Request, res: Response) => {
   const id = +req.params.id;
-  const profile = await crud.show('profile', id);
+  const profile = await crud.profileData(id);
   res.send(profile);
 };
 

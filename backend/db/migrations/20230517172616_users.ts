@@ -38,6 +38,7 @@ export async function up(knex: Knex): Promise<void> {
       t.text('website');
       t.string('industry', 100);
       t.integer('size');
+      t.boolean('featured').defaultTo(false);
       t.string('role', 10).defaultTo('employer');
       t.timestamps();
     })
