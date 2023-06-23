@@ -8,8 +8,6 @@ import { fileUpload } from '../../middlewares/fileUpload';
 
 const router = Router();
 
-export { router as applicationRouter };
-
 router.get('/jobs/:id/applications', checkRole('employer'), jobApplications);
 
 router.get('/users/applications', checkRole('user'), userApplications);
@@ -21,3 +19,5 @@ router.post('/applications', checkRole('user'), fileUpload, validateRequest(appC
 router.patch('/applications/:id', checkRole('user'), fileUpload, validateRequest(appUpdateSchema), update);
 
 router.patch('/applications/:id/respond', checkRole('employer'), validateRequest(respondSchema), respond);
+
+export { router as applicationRouter };
