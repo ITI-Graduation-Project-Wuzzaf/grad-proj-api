@@ -4,7 +4,7 @@
   "description": "iti graduation project api",
   "main": "index.ts",
   "scripts": {
-    "start": "pm2 start dist/index.js -i 2 --name=\"grad-api\" --no-daemon",
+    "start": "pm2 start dist/index.js",
     "dev": "nodemon -L src/index.ts",
     "start:dev": "ts-node-dev src/index.ts",
     "start:debug": "node --inspect-brk src/index.ts",
