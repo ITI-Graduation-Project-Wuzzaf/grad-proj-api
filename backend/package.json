@@ -4,7 +4,7 @@
   "description": "iti graduation project api",
   "main": "index.ts",
   "scripts": {
-    "start": "pm2 start dist/index.js",
+    "start": "pm2 start dist/src/index.js",
     "dev": "nodemon -L src/index.ts",
     "start:dev": "ts-node-dev src/index.ts",
     "start:debug": "node --inspect-brk src/index.ts",
@@ -88,6 +88,7 @@
     "@elastic/elasticsearch": "^8.7.0",
     "bcrypt": "^5.1.0",
     "cors": "^2.8.5",
+    "express": "^4.18.2",
     "express-async-errors": "^3.1.1",
     "express-rate-limit": "^6.7.0",
     "helmet": "^7.0.0",

@@ -1,0 +1,17 @@
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.applicationRouter = void 0;
+const express_1 = require("express");
+const application_1 = require("../../controllers/application");
+const application_2 = require("../../utilities/validation/application");
+const validateRequest_1 = require("../../middlewares/validateRequest");
+const checkRole_1 = require("../../middlewares/checkRole");
+const fileUpload_1 = require("../../middlewares/fileUpload");
+const router = (0, express_1.Router)();
+exports.applicationRouter = router;
+router.get('/jobs/:id/applications', (0, checkRole_1.checkRole)('employer'), application_1.jobApplications);
+router.get('/users/applications', (0, checkRole_1.checkRole)('user'), application_1.userApplications);
+router.get('/applications/:id', application_1.show);
+router.post('/applications', (0, checkRole_1.checkRole)('user'), fileUpload_1.fileUpload, (0, validateRequest_1.validateRequest)(application_2.appCreateSchema), application_1.create);
+router.patch('/applications/:id', (0, checkRole_1.checkRole)('user'), fileUpload_1.fileUpload, (0, validateRequest_1.validateRequest)(application_2.appUpdateSchema), application_1.update);
+router.patch('/applications/:id/respond', (0, checkRole_1.checkRole)('employer'), (0, validateRequest_1.validateRequest)(application_2.respondSchema), application_1.respond);

@@ -1,0 +1,10 @@
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.paymentRouter = void 0;
+const express_1 = require("express");
+const payment_1 = require("../../controllers/payment");
+const rateLimit_1 = require("../../middlewares/rateLimit");
+const checkRole_1 = require("../../middlewares/checkRole");
+const router = (0, express_1.Router)();
+exports.paymentRouter = router;
+router.post('/checkout', (0, rateLimit_1.limiter)(5), (0, checkRole_1.checkRole)('employer'), payment_1.checkout);

@@ -1,0 +1,15 @@
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.profileRouter = void 0;
+const express_1 = require("express");
+const profile_1 = require("../../controllers/profile");
+const validateRequest_1 = require("../../middlewares/validateRequest");
+const profile_2 = require("../../utilities/validation/profile");
+const requireAuth_1 = require("../../middlewares/requireAuth");
+const checkRole_1 = require("../../middlewares/checkRole");
+const fileUpload_1 = require("../../middlewares/fileUpload");
+const currentUser_1 = require("../../middlewares/currentUser");
+const router = (0, express_1.Router)();
+exports.profileRouter = router;
+router.get('/profiles/:id', currentUser_1.currentUser, requireAuth_1.requireAuth, profile_1.show);
+router.patch('/profiles', currentUser_1.currentUser, requireAuth_1.requireAuth, (0, checkRole_1.checkRole)('user', 'admin'), fileUpload_1.fileUpload, (0, validateRequest_1.validateRequest)(profile_2.profileSchema), profile_1.update);

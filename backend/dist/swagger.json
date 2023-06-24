@@ -1,0 +1,996 @@
+{
+    "openapi": "3.0.0",
+    "info": {
+        "version": "1.0.0",
+        "title": "Jobify API",
+        "description": "Jobify jobs portal Rest API",
+        "contact": { "email": "bassel2053@gmail.com" },
+        "license": {
+            "name": "MIT",
+            "url": "https://opensource.org/licenses/MIT"
+        }
+    },
+    "servers": [
+        {
+            "url": "http://localhost:5000/v1",
+            "description": "Development server",
+            "port": { "default": "3000" },
+            "basePath": {
+                "default": "v1"
+            }
+        }
+    ],
+    "tags": [
+        {
+            "name": "auth",
+            "description": "Authentication routes for jobify"
+        },
+        {
+            "name": "users",
+            "description": "User related endpoints"
+        },
+        {
+            "name": "employers",
+            "description": "employers/companies endpoints"
+        },
+        {
+            "name": "jobs",
+            "description": "jobs posting endpoints"
+        },
+        {
+            "name": "applications",
+            "description": "appplication related endpoints"
+        }
+    ],
+    "schemes": ["http"],
+    "produces": ["application/json"],
+    "paths": {
+        "/signup": {
+            "post": {
+                "tags": ["auth"],
+                "summary": "Create a new user",
+                "description": "creating new user account in jobify",
+                "consumes": ["application/json"],
+                "produces": ["application/json"],
+                "operationId": "createUser",
+                "requestBody": {
+                    "description": "Created user object",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "email": {
+                                        "type": "string",
+                                        "example": "test@example.com"
+                                    },
+                                    "password": {
+                                        "type": "string",
+                                        "example": "00000000"
+                                    },
+                                    "confirmPassword": {
+                                        "type": "string",
+                                        "example": "00000000"
+                                    },
+                                    "first_name": {
+                                        "type": "string",
+                                        "example": "John"
+                                    },
+                                    "last_name": {
+                                        "type": "string",
+                                        "example": "Doe"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "User created successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "user": {
+                                            "type": "object",
+                                            "properties": {
+                                                "email": {
+                                                    "type": "string",
+                                                    "example": "test@example.com"
+                                                },
+                                                "id": { "type": "number", "example": 10 }
+                                            }
+                                        },
+                                        "accessToken": { "type": "string" }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "400": { "description": "A duplicate email detected" },
+                    "422": { "description": "Validation error happened" }
+                }
+            }
+        },
+        "/login": {
+            "post": {
+                "tags": ["auth"],
+                "summary": "User signin",
+                "description": "User login to get access to jobify resources like jobs, companies and profiels",
+                "operationId": "login",
+                "requestBody": {
+                    "description": "Login object",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "username": {
+                                        "type": "string",
+                                        "example": "test@example.com"
+                                    },
+                                    "password": { "type": "string", "example": "000000" }
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "User is authenticated",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "user": { "$ref": "#/components/schemas/User" },
+                                        "accessToken": {
+                                            "type": "string"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "The email and password combination is not valid"
+                    },
+                    "422": { "description": "Validation error happened" }
+                }
+            }
+        },
+        "/profiles/{id}": {
+            "get": {
+                "tags": ["users"],
+                "summary": "User profile",
+                "description": "Get a specific profile data",
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ],
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "id",
+                        "description": "id of the user profile to get",
+                        "required": true,
+                        "type": "string",
+                        "example": 12
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "User profile data is retrived",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Profile"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "User is not authorized"
+                    },
+                    "404": { "description": "User profile cannot be found" }
+                }
+            }
+        },
+        "/profiles": {
+            "patch": {
+                "tags": ["users"],
+                "summary": "Update user profile",
+                "description": "Updates the current logged in user profile",
+                "operationId": "updateProfile",
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ],
+                "requestBody": {
+                    "description": "Updated profile data",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/Profile"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "User profile is updated",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Profile"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "User is not authorized"
+                    },
+                    "422": { "description": "Validation error happened" }
+                }
+            }
+        },
+        "/employers": {
+            "post": {
+                "tags": ["employers"],
+                "summary": "Create a new employer",
+                "description": "creating new employer to post jobs",
+                "consumes": ["application/json"],
+                "produces": ["application/json"],
+                "operationId": "createEmployer",
+                "requestBody": {
+                    "description": "Created employer object",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "email": {
+                                        "type": "string",
+                                        "example": "company@example.com"
+                                    },
+                                    "password": {
+                                        "type": "string",
+                                        "example": "00000000"
+                                    },
+                                    "confirmPassword": {
+                                        "type": "string",
+                                        "example": "00000000"
+                                    },
+                                    "name": {
+                                        "type": "string",
+                                        "example": "jobify"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "User employer successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "user": {
+                                            "type": "object",
+                                            "properties": {
+                                                "email": {
+                                                    "type": "string",
+                                                    "example": "company@example.com"
+                                                },
+                                                "id": { "type": "number", "example": 10 }
+                                            }
+                                        },
+                                        "accessToken": { "type": "string" }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "400": { "description": "A duplicate email detected" },
+                    "422": { "description": "Validation error happened" }
+                }
+            },
+            "patch": {
+                "tags": ["employers"],
+                "summary": "Update employer data",
+                "description": "Updates the current logged in employer data",
+                "operationId": "updateEmployer",
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ],
+                "requestBody": {
+                    "description": "Updated employer data",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/Employer"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Employer data is updated",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Employer"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "User is not authorized"
+                    },
+                    "422": { "description": "Validation error happened" }
+                }
+            }
+        },
+        "/employers/{id}": {
+            "get": {
+                "tags": ["employers"],
+                "summary": "Employer data",
+                "description": "Get a specific employer data",
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ],
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "id",
+                        "description": "id of the employer to get",
+                        "required": true,
+                        "type": "string",
+                        "example": 12
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Employer data is retrived",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Employer"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "User is not authorized"
+                    },
+                    "404": { "description": "Employer cannot be found" }
+                }
+            }
+        },
+        "/jobs": {
+            "get": {
+                "tags": ["jobs"],
+                "summary": "Get all job posts",
+                "description": "Get paginated job posts",
+                "responses": {
+                    "200": {
+                        "description": "array of job posts and pagination info",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "jobs": {
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/components/schemas/Job"
+                                            }
+                                        },
+                                        "pagination": {
+                                            "type": "object",
+                                            "properties": {
+                                                "page": {
+                                                    "type": "number"
+                                                },
+                                                "next": { "type": "boolean" },
+                                                "prev": { "type": "boolean" },
+                                                "numberOfPages": { "type": "number" },
+                                                "total": { "type": "number" }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "post": {
+                "tags": ["jobs"],
+                "summary": "Create a new job post",
+                "description": "Make a new job post to find job seekers",
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ],
+                "consumes": ["application/json"],
+                "produces": ["application/json"],
+                "operationId": "createJob",
+                "requestBody": {
+                    "description": "Created job post object",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/Job"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "User employer successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Job"
+                                }
+                            }
+                        }
+                    },
+                    "401": { "description": "Must be authenticated employer" },
+                    "422": { "description": "Validation error happened" }
+                }
+            }
+        },
+        "/jobs/{id}": {
+            "get": {
+                "tags": ["jobs"],
+                "summary": "job post data",
+                "description": "Get a specific job post data",
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "id",
+                        "description": "id of the job to get",
+                        "required": true,
+                        "type": "string",
+                        "example": 9
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "job data is retrived",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Job"
+                                }
+                            }
+                        }
+                    },
+                    "404": { "description": "job post cannot be found" }
+                }
+            },
+            "patch": {
+                "tags": ["jobs"],
+                "summary": "update job post",
+                "description": "update a specific job post data",
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ],
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "id",
+                        "description": "id of job post to update",
+                        "required": true,
+                        "type": "string",
+                        "example": 12
+                    }
+                ],
+                "requestBody": {
+                    "description": "new job post data",
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/Job"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "job post data has been updated",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Job"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Must be authenticated employer"
+                    },
+                    "404": { "description": "job post cannot be found" },
+                    "422": { "description": "Validation error happened" }
+                }
+            },
+            "delete": {
+                "tags": ["jobs"],
+                "summary": "delete a job post",
+                "description": "Delete job posts that you craeted",
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ],
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "id",
+                        "description": "id of the job post to delete",
+                        "required": true,
+                        "type": "string",
+                        "example": 12
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Job post has been deleted",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "string"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Must be authenticated employer"
+                    },
+                    "404": { "description": "Job post cannot be found" }
+                }
+            }
+        },
+        "/jobs/{id}/applications": {
+            "get": {
+                "tags": ["applications"],
+                "summary": "job applications",
+                "description": "Get applications of users who applied for a job",
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ],
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "id",
+                        "description": "id of the job to get application for",
+                        "required": true,
+                        "type": "string",
+                        "example": 25
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "job applications retrived",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "applications": {
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/components/schemas/Application"
+                                            }
+                                        },
+                                        "pagination": {
+                                            "type": "object",
+                                            "properties": {
+                                                "page": {
+                                                    "type": "number"
+                                                },
+                                                "next": { "type": "boolean" },
+                                                "prev": { "type": "boolean" },
+                                                "numberOfPages": { "type": "number" },
+                                                "total": { "type": "number" }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "401": { "description": "Must be authenticated employer" },
+                    "404": { "description": "application cannot be found" }
+                }
+            }
+        },
+        "/users/applications": {
+            "get": {
+                "tags": ["applications"],
+                "summary": "user applications",
+                "description": "Get all user submitted applications",
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "user applications retrived",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "applications": {
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/components/schemas/Application"
+                                            }
+                                        },
+                                        "pagination": {
+                                            "type": "object",
+                                            "properties": {
+                                                "page": {
+                                                    "type": "number"
+                                                },
+                                                "next": { "type": "boolean" },
+                                                "prev": { "type": "boolean" },
+                                                "numberOfPages": { "type": "number" },
+                                                "total": { "type": "number" }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "401": { "description": "Must be authenticated user" }
+                }
+            }
+        },
+        "/applications/{id}": {
+            "get": {
+                "tags": ["applications"],
+                "summary": "application data",
+                "description": "Get an application by id",
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ],
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "id",
+                        "description": "id of application to get",
+                        "required": true,
+                        "type": "string",
+                        "example": 7
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "application data has been retrived",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Application"
+                                }
+                            }
+                        }
+                    },
+                    "401": { "description": "User is not loggedin" },
+                    "404": { "description": "application cannot be found, or application is not related to the current user" }
+                }
+            },
+            "patch": {
+                "tags": ["applications"],
+                "summary": "update an application",
+                "description": "Update an application that is submitted to apply for a job",
+                "operationId": "updateApplication",
+                "requestBody": {
+                    "description": "new application data",
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "cv": {
+                                        "type": "string"
+                                    },
+                                    "cover_letter": {
+                                        "type": "string"
+                                    },
+                                    "additional_info": {
+                                        "type": "string"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "User has applied for a job",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Application"
+                                }
+                            }
+                        }
+                    },
+                    "401": { "description": "Must be authenticated user" },
+                    "404": {
+                        "description": "The job user is applying for is not found, or user trying to update other user application"
+                    },
+                    "422": { "description": "Validation error happened" }
+                }
+            }
+        },
+        "/applications": {
+            "post": {
+                "tags": ["applications"],
+                "summary": "apply for a job",
+                "description": "Create a new application, to apply for a job",
+                "operationId": "submitApplication",
+                "requestBody": {
+                    "description": "Created application object",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "job_id": {
+                                        "type": "number",
+                                        "example": "4"
+                                    },
+                                    "cv": {
+                                        "type": "string"
+                                    },
+                                    "cover_letter": {
+                                        "type": "string"
+                                    },
+                                    "additional_info": {
+                                        "type": "string"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "User has applied for a job",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Application"
+                                }
+                            }
+                        }
+                    },
+                    "400": { "description": "User trying to apply for a job more than once" },
+                    "401": { "description": "Must be authenticated user" },
+                    "404": { "description": "The job user is applying for is not found" },
+                    "422": { "description": "Validation error happened" }
+                }
+            }
+        }
+    },
+    "components": {
+        "schemas": {
+            "User": {
+                "type": "object",
+                "required": ["email", "password", "first_name", "last_name"],
+                "properties": {
+                    "id": {
+                        "type": "number",
+                        "description": "user id"
+                    },
+                    "email": {
+                        "type": "string",
+                        "description": "unique email for every user account"
+                    },
+                    "first_name": {
+                        "type": "string",
+                        "example": "John"
+                    },
+                    "last_name": {
+                        "type": "string",
+                        "example": "Doe"
+                    }
+                }
+            },
+            "Profile": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "number",
+                        "description": "profile id"
+                    },
+                    "job": {
+                        "type": "string"
+                    },
+                    "country": {
+                        "type": "string",
+                        "example": "Egypt"
+                    },
+                    "city": {
+                        "type": "string",
+                        "example": "Port Said"
+                    },
+                    "university": {
+                        "type": "string",
+                        "example": "Port Said"
+                    },
+                    "gender": {
+                        "type": "string",
+                        "enum": ["M", "F"]
+                    },
+                    "experience": {
+                        "type": "string"
+                    },
+                    "brithdate": {
+                        "type": "string"
+                    },
+                    "bio": {
+                        "type": "string"
+                    },
+                    "skills": {
+                        "type": "array",
+                        "items": { "type": "string" }
+                    },
+                    "links": {
+                        "type": "array",
+                        "items": { "type": "string" }
+                    },
+                    "portfolio": {
+                        "type": "string"
+                    }
+                }
+            },
+            "Employer": {
+                "type": "object",
+                "required": ["email", "password", "name"],
+                "properties": {
+                    "id": {
+                        "type": "number",
+                        "description": "employer id"
+                    },
+                    "email": {
+                        "type": "string",
+                        "description": "unique email for every account"
+                    },
+                    "name": {
+                        "type": "string",
+                        "example": "jobify"
+                    },
+                    "country": {
+                        "type": "string",
+                        "example": "Egypt"
+                    },
+                    "city": {
+                        "type": "string",
+                        "example": "Port Said"
+                    },
+                    "description": {
+                        "type": "string"
+                    },
+                    "industry": {
+                        "type": "string"
+                    },
+                    "size": {
+                        "type": "number"
+                    }
+                }
+            },
+            "Job": {
+                "type": "object",
+                "required": ["title", "description", "type", "location"],
+                "properties": {
+                    "id": {
+                        "type": "number",
+                        "description": "job posting id"
+                    },
+                    "title": {
+                        "type": "string",
+                        "example": "Senior Fullstack developer"
+                    },
+                    "description": {
+                        "type": "string",
+                        "example": "Senior Fullstack developer who can use MERN/MEAN"
+                    },
+                    "type": {
+                        "type": "string",
+                        "enum": ["Part-time", "Full-time"]
+                    },
+                    "location": {
+                        "type": "string",
+                        "example": "Remote"
+                    },
+                    "min_salary": {
+                        "type": "number",
+                        "example": "1000"
+                    },
+                    "max_salary": {
+                        "type": "number",
+                        "example": "2500"
+                    },
+                    "experience": {
+                        "type": "string"
+                    },
+                    "skills": {
+                        "type": "array",
+                        "items": { "type": "string" }
+                    }
+                }
+            },
+            "Application": {
+                "type": "object",
+                "required": ["job_id", "cv"],
+                "properties": {
+                    "id": {
+                        "type": "number",
+                        "description": "application id"
+                    },
+                    "user_id": {
+                        "type": "number",
+                        "example": "id of user applying for the job"
+                    },
+                    "job_id": {
+                        "type": "number",
+                        "example": "id of the job user is applying for"
+                    },
+                    "status": {
+                        "type": "string",
+                        "enum": ["submitted", "rejected"]
+                    },
+                    "cv": {
+                        "type": "string"
+                    },
+                    "cover_letter": {
+                        "type": "string"
+                    },
+                    "additional_info": {
+                        "type": "string"
+                    }
+                }
+            }
+        },
+        "securitySchemes": {
+            "bearerAuth": {
+                "type": "http",
+                "scheme": "bearer",
+                "bearerFormat": "JWT"
+            }
+        }
+    }
+}
