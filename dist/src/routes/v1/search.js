@@ -1,0 +1,12 @@
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.searchRouter = void 0;
+const express_1 = require("express");
+const search_1 = require("../../controllers/search");
+const currentUser_1 = require("../../middlewares/currentUser");
+const requireAuth_1 = require("../../middlewares/requireAuth");
+const checkRole_1 = require("../../middlewares/checkRole");
+const router = (0, express_1.Router)();
+exports.searchRouter = router;
+router.get('/search', currentUser_1.currentUser, search_1.search);
+router.get('/search/candidates', currentUser_1.currentUser, requireAuth_1.requireAuth, (0, checkRole_1.checkRole)('employer', 'admin'), search_1.candidateSearch);

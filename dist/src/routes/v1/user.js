@@ -1,0 +1,17 @@
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.userRouter = void 0;
+const express_1 = require("express");
+const user_1 = require("../../controllers/user");
+const user_2 = require("../../utilities/validation/user");
+const validateRequest_1 = require("../../middlewares/validateRequest");
+const requireAuth_1 = require("../../middlewares/requireAuth");
+const checkRole_1 = require("../../middlewares/checkRole");
+const currentUser_1 = require("../../middlewares/currentUser");
+const router = (0, express_1.Router)();
+exports.userRouter = router;
+router.post('/contact', (0, validateRequest_1.validateRequest)(user_2.contactSchema), user_1.contactUs);
+router.post('/save-job', currentUser_1.currentUser, requireAuth_1.requireAuth, (0, checkRole_1.checkRole)('user'), user_1.saveJob);
+router.delete('/remove-job', currentUser_1.currentUser, requireAuth_1.requireAuth, (0, checkRole_1.checkRole)('user'), user_1.removeSavedJob);
+router.get('/user/jobs', currentUser_1.currentUser, requireAuth_1.requireAuth, (0, checkRole_1.checkRole)('user'), user_1.userSavedJobs);
+router.get('/notifications', currentUser_1.currentUser, requireAuth_1.requireAuth, user_1.getNotifications);

@@ -1,0 +1,18 @@
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.jobRouter = void 0;
+const express_1 = require("express");
+const job_1 = require("../../controllers/job");
+const job_2 = require("../../utilities/validation/job");
+const validateRequest_1 = require("../../middlewares/validateRequest");
+const requireAuth_1 = require("../../middlewares/requireAuth");
+const checkRole_1 = require("../../middlewares/checkRole");
+const currentUser_1 = require("../../middlewares/currentUser");
+const router = (0, express_1.Router)();
+exports.jobRouter = router;
+router.get('/jobs/', job_1.index);
+router.get('/employer/jobs', currentUser_1.currentUser, requireAuth_1.requireAuth, (0, checkRole_1.checkRole)('employer'), job_1.employerJobs);
+router.post('/jobs/', currentUser_1.currentUser, requireAuth_1.requireAuth, (0, checkRole_1.checkRole)('employer', 'admin'), (0, validateRequest_1.validateRequest)(job_2.jobCreateSchema), job_1.create);
+router.get('/jobs/:id', job_1.show);
+router.patch('/jobs/:id', currentUser_1.currentUser, requireAuth_1.requireAuth, (0, checkRole_1.checkRole)('employer'), (0, validateRequest_1.validateRequest)(job_2.jobUpdateSchema), job_1.update);
+router.delete('/jobs/:id', currentUser_1.currentUser, requireAuth_1.requireAuth, (0, checkRole_1.checkRole)('employer', 'admin'), job_1.remove);
