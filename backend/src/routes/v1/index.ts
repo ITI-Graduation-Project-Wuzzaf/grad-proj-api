@@ -1,3 +1,4 @@
+import { checkRole } from './../../middlewares/checkRole';
 import { Router } from 'express';
 
 import { authRouter } from './auth';
@@ -11,6 +12,7 @@ import { paymentRouter } from './payment';
 
 import { requireAuth } from '../../middlewares/requireAuth';
 import { currentUser } from '../../middlewares/currentUser';
+import { adminRouter } from './admin';
 
 const router = Router();
 
@@ -22,5 +24,6 @@ router.use(searchRouter);
 router.use(userRouter);
 router.use(currentUser, requireAuth, applicationRouter);
 router.use(paymentRouter);
+router.use(checkRole('admin'), adminRouter);
 
 export default router;
