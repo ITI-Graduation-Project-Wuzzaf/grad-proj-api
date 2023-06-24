@@ -15,7 +15,6 @@
     "test:coverage": "jest --coverage",
     "lint": "eslint --ignore-path .eslintignore  --ext .js,.ts .",
     "format": "prettier --ignore-path .gitignore --write \"**/*.+(js|ts|json)\"",
-    "prepare": "cd .. & npx husky install backend/.husky",
     "migration:dev": "npx knex migrate:latest --env development",
     "seed:make": "npx knex seed:make --env development",
     "seed:run": "npx knex seed:run --env development",
