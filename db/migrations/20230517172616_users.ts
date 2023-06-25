@@ -54,7 +54,7 @@ export async function up(knex: Knex): Promise<void> {
       t.enu('category', ['Development', 'Design', 'Marketing', 'Business', 'Support']).notNullable();
       t.specificType('skills', 'varchar(100)[]');
       t.boolean('featured').defaultTo(false);
-      t.integer('employer_id').unsigned().notNullable().references('id').inTable('employer');
+      t.integer('employer_id').unsigned().notNullable().references('id').inTable('employer').onDelete('CASCADE');
       t.timestamps(true, true);
     })
     .createTable('application', (t) => {
