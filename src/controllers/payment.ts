@@ -34,8 +34,8 @@ export const checkout = async (req: Request, res: Response) => {
         quantity: 1,
       },
     ],
-    success_url: 'http://localhost:5173/',
-    cancel_url: 'http://localhost:5173/?payment=failed',
+    success_url: 'https://jobify-ruby-one.vercel.app/',
+    cancel_url: 'https://jobify-ruby-one.vercel.app/?payment=failed',
   });
 
   res.send({ sessionId: session.id });
